@@ -25,7 +25,7 @@ Note: (Features will be implemented incrementally through sprints.)
 ## 3. Quick Start
 1. Clone the repository
 ```bash
-git clone https://github.com/[your-username]/market-scout.git
+git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
 ```
 
 2. Install dependencies

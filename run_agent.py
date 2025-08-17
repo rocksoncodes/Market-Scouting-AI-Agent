@@ -1,19 +1,11 @@
-from scrapper.reddit_scrapper import fetch_reddit_posts
+from utils.agent import start_agent, agent_objective
 
 def main():
     """
-    Main execution function for fetching Reddit posts.
+    Main execution function for running the agent.
     """
-    subreddit_list = [
-        "startups", 
-        "Entrepreneur", 
-        "smallbusiness",
-        "freelance",
-        "Productivity",
-        "sidehustle"
-    ]
 
-    fetch_reddit_posts(subreddit_list)
+    start_agent(agent_objective)
 
 
 if __name__ == "__main__":

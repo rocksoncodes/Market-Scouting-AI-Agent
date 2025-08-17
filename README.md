@@ -25,6 +25,7 @@ Note: (Features will be implemented incrementally through development sprints.)
 ```
 
 ## 3. Quick Start
+
 1. Clone the repository
 ```bash
 git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
@@ -71,8 +72,6 @@ Run the agent
 ```bash
 python run_agent.py  # currently placeholder
 ```
-
-
 
 Future updates will fetch problems, process them, and report to Notion automatically.
 

@@ -1,5 +1,5 @@
 # Market Scouting AI Agent
-#### For Entrepreneurs & Developers </br>
+#### `For Entrepreneurs & Developers` </br>
 Automatically discovers market problems so you can focus on building solutions instead of hunting for ideas.
 
 

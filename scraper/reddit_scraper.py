@@ -3,7 +3,6 @@ from utils.reddit_connection import connect_to_reddit
 
 reddit = connect_to_reddit()
 
-
 subreddit_list = [
         "startups", 
         "Entrepreneur", 
@@ -13,7 +12,8 @@ subreddit_list = [
         "sidehustle"
 ]
         
-
+        
+# TODO: Extend this function to return posts from reddit:
 def fetch_reddit_posts(subreddit_list):
     """
      Fetch the top posts from a list of subreddits and print their titles.
@@ -29,6 +29,3 @@ def fetch_reddit_posts(subreddit_list):
         logger.error("Cannot fetch posts because Reddit connection failed.")
         return None
     
-
-def filter_reddit_posts():
-    pass

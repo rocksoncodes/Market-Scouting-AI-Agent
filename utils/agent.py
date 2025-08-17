@@ -33,7 +33,7 @@ agent_objective = """
     Return the structured brief only.
     """
 
-
+# TODO: Extend this function to use the reddit_scraper functions
 def start_agent(query):
     response = agent.models.generate_content(
         model = "gemini-1.5-flash",

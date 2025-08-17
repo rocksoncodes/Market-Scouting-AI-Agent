@@ -31,9 +31,7 @@ def validate_secrets(reddit_secrets):
         return False
     
     if found_keys:
-        logger.info(f" {len(found_keys)} environment variables were loaded successfully")
-        for key in found_keys:
-            logger.info(f"{key} was loaded successfully")
+        logger.info(f" {len(found_keys)} reddit environment variables were loaded successfully")
     
     return True
 

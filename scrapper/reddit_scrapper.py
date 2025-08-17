@@ -12,8 +12,10 @@ def fetch_reddit_posts(subreddit_list):
 
     try:
         for subreddit in subreddit_list:
-            for submission in reddit.subreddit(subreddit).hot(limit=10):
+            print(f"{subreddit.title()} Subreddit:")
+            for submission in reddit.subreddit(subreddit).hot(limit=5):
                 print(f"{submission.title}")
+            print(f"\n")
     except Exception:
         logger.error("Cannot fetch posts because Reddit connection failed.")
         return None

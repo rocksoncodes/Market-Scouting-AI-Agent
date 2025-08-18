@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from utils.logger import logger
 from google import genai
+from google.genai import types
 
 
 def initialize_gemini():
@@ -17,6 +18,11 @@ def initialize_gemini():
     return client
 
 
+def provide_agent_tools(tools):
+    config=types.GenerateContentConfig(tools=tools)
+    return config
+
+
 agent_objective = """
     You are a market scout agent.
     Your objective is to identify Reddit posts where users face real, recurring problems.
@@ -27,5 +33,6 @@ agent_objective = """
     4. Feasibility (problem can realistically be solved by a product/service).
     If a post meets at least 80 percent of the criteria, reframe it into a structured problem brief:
     [X user faces Y problem, so build Z solution to achieve W result].
-    Return the structured brief only.
+    For each post received return the structured brief only.
+    At the very end, write: "Total problems identified: <number>
     """

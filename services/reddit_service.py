@@ -1,11 +1,12 @@
 import os
 import praw
 from dotenv import load_dotenv
-from .logger import logger
+from ..utils.logger import logger
 
 
-def validate_secrets(reddit_secrets):
+def validate_reddit_secrets(reddit_secrets):
     """
+    Helper Function:
     Validate that all required Reddit environment variables are loaded.
 
     Logs
@@ -57,7 +58,7 @@ def connect_to_reddit():
         "REDDIT_USER_AGENT": user_agent
     }
 
-    if not validate_secrets(reddit_secrets):
+    if not validate_reddit_secrets(reddit_secrets):
         logger.error("Connection to Reddit failed due to missing environment variable(s)")
         return None
         

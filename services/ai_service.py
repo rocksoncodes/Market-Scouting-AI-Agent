@@ -17,9 +17,6 @@ def initialize_gemini():
     return client
 
 
-agent = initialize_gemini()
-
-
 agent_objective = """
     You are a market scout agent.
     Your objective is to identify Reddit posts where users face real, recurring problems.
@@ -32,19 +29,3 @@ agent_objective = """
     [X user faces Y problem, so build Z solution to achieve W result].
     Return the structured brief only.
     """
-
-
-def start_agent(query):
-    """
-    TODO(rocksoncodes): [High Priority] 
-        - Extend this function to use the reddit_scraper function
-        - Specifically function -> fetch_reddit_posts()
-        - The agent should be able to call this function to fetch posts from reddit
-        - And finally return problem statements for storage
-    """
-
-    response = agent.models.generate_content(
-        model = "gemini-1.5-flash",
-        contents = f"{query}"
-    )
-    print(response.text)

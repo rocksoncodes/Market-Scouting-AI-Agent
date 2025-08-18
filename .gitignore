@@ -1,5 +1,6 @@
 .venv
 .env
+Market-Scouting-AI-Agent.code-workspace
 __pycache__/
 *.pyc
 .env.*

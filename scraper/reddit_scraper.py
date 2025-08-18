@@ -1,5 +1,5 @@
 from utils.logger import logger
-from utils.reddit_connection import connect_to_reddit
+from services.reddit_service import connect_to_reddit
 
 
 reddit = connect_to_reddit()

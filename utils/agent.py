@@ -33,10 +33,18 @@ agent_objective = """
     Return the structured brief only.
     """
 
-# TODO: Extend this function to use the reddit_scraper functions
+
 def start_agent(query):
+    """
+    TODO(rocksoncodes): [High Priority] 
+        - Extend this function to use the reddit_scraper function
+        - Specifically function -> fetch_reddit_posts()
+        - The agent should be able to call this function to fetch posts from reddit
+        - And finally return problem statements for storage
+    """
+
     response = agent.models.generate_content(
         model = "gemini-1.5-flash",
-        contents = query
+        contents = f"{query}"
     )
     print(response.text)

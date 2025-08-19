@@ -11,18 +11,15 @@ Because this process takes so much time, I'm building Market Scout to automatica
 This way, users can focus on building solutions instead of hunting for ideas, saving time and increasing productivity.
 This repository contains the initial project setup; more updates and implementations will be added throughout development.
 
-## 2. Planned Features
+## 2. Current Features
 
-- Reddit Scraper: Collects relevant data efficiently
-
-- Problem Processor: Converts raw posts into structured problem briefs
-
-- Notion Reporter: Organizes findings in Notion databases
-
-- Feedback Loop: Allows iterative improvements based on user input
-```bash
-Note: (Features will be implemented incrementally through development sprints.)
-```
+- Reddit Integration: OAuth-based Reddit API connection
+- AI-Powered Analysis: Gemini API integration for problem validation
+- Structured Logging: Comprehensive logging system
+- Modular Architecture: 
+  - agents/: AI agent logic and coordination
+  - services/: Core business logic and API integrations
+  - utils/: Shared utilities and helper functions
 
 ## 3. Quick Start
 
@@ -41,9 +38,17 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-4. Run the application
+4. Configure your .env file with:
 ```bash
-python run_agent.py  # currently placeholder script
+REDDIT_CLIENT_ID       # Your Reddit API client ID
+REDDIT_CLIENT_SECRET   # Your Reddit API secret key
+REDDIT_USER_AGENT     # Your Reddit API user agent
+GEMINI_API_KEY        # Your Google Gemini API key
+```
+
+5. Run the scout agent
+```bash
+python main.py
 ```
 
 ## 4. Configuration
@@ -60,20 +65,22 @@ GEMINI_API_KEY         # Gemini LLM API key
 (These will be used as features are implemented.)
 ```
 
-## 5. Tech Stack
+## 5. Current Capabilities
 
-- Language/Framework: Python
-- Database: SQLite
-- APIs & Tools: PRAW (Reddit API), Gemini SDK, Notion API
-- CI/CD: GitHub Actions
+- Reddit Data Collection: Fetches relevant posts from configured subreddits
+- Problem Validation: Uses Gemini AI to evaluate problem validity
+- Market Analysis: Analyzes post engagement and sentiment
+- Structured Output: Formats identified problems into actionable briefs
 
-## 6. Example Usage
-Run the agent
-```bash
-python run_agent.py  # currently placeholder
-```
+## 6. Development Status
 
-Future updates will fetch problems, process them, and report to Notion automatically.
+Current branch: `MSAA-001-Reddit-Scrapper-Implementation`
+- ✅ Basic project structure
+- ✅ Reddit API integration
+- ✅ Gemini AI integration
+- 🔄 Reddit data collection
+- 📝 Problem validation system
+- 📝 Market sentiment analysis
 
 ## 7. Contributing
 

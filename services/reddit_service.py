@@ -37,10 +37,14 @@ def connect_to_reddit():
     """
     load_dotenv()
 
+    client_id = os.getenv("REDDIT_CLIENT_ID")
+    client_secret = os.getenv("REDDIT_CLIENT_SECRET")
+    user_agent = os.getenv("REDDIT_USER_AGENT")
+
     reddit_secrets = {
-        "REDDIT_CLIENT_ID": os.getenv("REDDIT_CLIENT_ID"),
-        "REDDIT_CLIENT_SECRET": os.getenv("REDDIT_CLIENT_SECRET"), 
-        "REDDIT_USER_AGENT": os.getenv("REDDIT_USER_AGENT")
+        "REDDIT_CLIENT_ID":  client_id,
+        "REDDIT_CLIENT_SECRET": client_secret, 
+        "REDDIT_USER_AGENT": user_agent
     }
 
     if not validate_reddit_secrets(reddit_secrets):
@@ -49,9 +53,9 @@ def connect_to_reddit():
         
     try:
         reddit = praw.Reddit(
-        client_id = reddit["REDDIT_CLIENT_ID"],
-        client_secret = reddit["REDDIT_CLIENT_SECRET"],
-        user_agent = reddit["REDDIT_USER_AGENT"]
+        client_id =  client_id,
+        client_secret = client_secret,
+        user_agent = user_agent
         )
         logger.info("Connection to the Reddit API was successful!")
         return reddit

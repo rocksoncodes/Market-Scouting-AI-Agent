@@ -6,6 +6,15 @@ reddit = connect_to_reddit()
 
 
 def fetch_reddit_posts() -> dict:
+    """
+    Use fetch_reddit_posts when you want to retrieve Reddit posts.
+    
+    This function uses predefined settings:
+        - No parameters required - call directly when you need current posts
+    
+    Returns:
+        dict: Contains list of posts with title, body, subreddit, and upvote_ratio
+    """
     subreddit_list = ["smallbusiness"]
     limit = 10
     posts = []

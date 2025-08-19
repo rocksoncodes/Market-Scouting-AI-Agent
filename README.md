@@ -78,9 +78,10 @@ Current branch: `MSAA-001-Reddit-Scrapper-Implementation`
 - ✅ Basic project structure
 - ✅ Reddit API integration
 - ✅ Gemini AI integration
-- 🔄 Reddit data collection
-- 📝 Problem validation system
-- 📝 Market sentiment analysis
+- ✅ Reddit data collection
+- ✅ Problem validation system
+- 🔄 Market sentiment analysis
+- 📝 Reddit data storage 
 
 ## 7. Contributing
 
@@ -94,4 +95,4 @@ Pull requests are welcome! You can help by:
 
 ## 8. License
 
-MIT License – free to use, adapt, and share.
+MIT License – free to use, adapt and share.

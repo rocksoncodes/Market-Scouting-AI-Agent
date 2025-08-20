@@ -69,8 +69,6 @@ GEMINI_API_KEY         # Gemini LLM API key
 
 - Reddit Data Collection: Fetches relevant posts from configured subreddits
 - Problem Validation: Uses Gemini AI to evaluate problem validity
-- Market Analysis: Analyzes post engagement and sentiment
-- Structured Output: Formats identified problems into actionable briefs
 
 ## 6. Development Status
 

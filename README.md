@@ -57,7 +57,7 @@ Edit the .env file with your:
 ```bash
 REDDIT_CLIENT_ID       # Reddit API client ID
 REDDIT_CLIENT_SECRET   # Reddit API secret
-USER_AGENT             # Reddit API user agent
+REDDIT_USER_AGENT      # Reddit API user agent
 NOTION_API_KEY         # Notion integration key
 NOTION_DB_ID           # Notion database ID
 GEMINI_API_KEY         # Gemini LLM API key

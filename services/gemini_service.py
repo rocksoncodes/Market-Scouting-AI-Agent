@@ -53,9 +53,9 @@ scout_agent_objective = """
     3. Clarity (user describes problem in a clear, relatable way).
     4. Feasibility (problem can realistically be solved by a product/service).
     If a post meets at least 80 percent of the criteria:
-    Store the qualified post into our database using the `store_reddit_problems` function.
-
-    If no problems where found let me know no problems were identified
+        Store the qualified post into our database using the `store_reddit_problems` function.
+    Else:
+        If no problems where found let me know no problems were identified
 
     Output:
     - Do not return or reframe the post.

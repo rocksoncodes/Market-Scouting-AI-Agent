@@ -6,7 +6,7 @@ Automatically discovers market problems so you can focus on building solutions i
 ## 1. How Market Scout Works (Overview)
 
 Entrepreneurs and developers spend hours manually searching forums and communities, trying to find problems worth solving.
-Because this process takes so much time, I'm building Market Scout to automatically discover, filter, and structure market problems into actionable project briefs.
+Because this process takes so much time, I'm building Market Scout to automatically discover, filter and structure these market problems into actionable project briefs.
 
 This way, users can focus on building solutions instead of hunting for ideas, saving time and increasing productivity.
 This repository contains the initial project setup; more updates and implementations will be added throughout development.
@@ -69,8 +69,6 @@ GEMINI_API_KEY         # Gemini LLM API key
 
 - Reddit Data Collection: Fetches relevant posts from configured subreddits
 - Problem Validation: Uses Gemini AI to evaluate problem validity
-- Market Analysis: Analyzes post engagement and sentiment
-- Structured Output: Formats identified problems into actionable briefs
 
 ## 6. Development Status
 

@@ -22,8 +22,8 @@ def initialize_gemini():
         logger.info("Gemini client initialized successfully. Agent is ready.")
         return client
     
-    except Exception:
-        logger.exception(f"Failed to initialize Gemini client.")
+    except Exception as e:
+        logger.exception(f"Failed to initialize Gemini client: {e}")
         raise SystemExit("Gemini initialization failed. Check your API key and SDK setup.") 
 
     
@@ -40,7 +40,6 @@ def provide_agent_tools(tools):
     except Exception as e:
         logger.exception(f"Failed to configure agent tools: {e}")
         return None
-
 
 
 scout_agent_objective = """

@@ -1,5 +1,5 @@
 from agents.scout_agent import run_scout_agent
-from services.ai_service import scout_agent_objective
+from services.gemini_service import scout_agent_objective
 
 def main():
     """

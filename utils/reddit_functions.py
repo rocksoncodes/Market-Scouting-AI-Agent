@@ -15,7 +15,7 @@ def fetch_reddit_posts() -> dict:
     Returns:
         dict: Contains list of posts with title, body, subreddit, and upvote_ratio
     """
-    subreddit_list: str = ["smallbusiness"]
+    subreddit_list: str = ["ghana"]
     limit: int = 10
     posts = []
 

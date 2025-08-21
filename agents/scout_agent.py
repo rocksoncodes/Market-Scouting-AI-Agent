@@ -1,4 +1,4 @@
-from services.ai_service import initialize_gemini, provide_agent_tools
+from services.gemini_service import initialize_gemini, provide_agent_tools
 from utils.reddit_functions import fetch_reddit_posts
 from utils.logger import logger
 
@@ -21,6 +21,6 @@ def run_scout_agent(query):
       logger.info("Market Scout Agent executed successfully.")
       print(response.text)
 
-   except Exception:
-      logger.exception("Unexpected error while running Market Scout Agent.")
+   except Exception as e:
+      logger.exception(f"Unexpected error while running Market Scout Agent: {e}")
       raise SystemExit("Agent terminated due to an error.")

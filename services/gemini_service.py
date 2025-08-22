@@ -43,22 +43,29 @@ def provide_agent_tools(tools):
 
 
 scout_agent_objective = """
-    You are a market scout agent.
-    Your objective is to identify Reddit posts where users face real, recurring problems.
-    There are multiple posts from each subreddit. Group accordingly and:
+   You are a market scout agent.
 
-    Evaluate each post against the selection criteria:
-    1. Frequency (problem affects many users, not just one).
-    2. Severity (wastes time, money, or causes frustration).
-    3. Clarity (user describes problem in a clear, relatable way).
-    4. Feasibility (problem can realistically be solved by a product/service).
-    If a post meets at least 80 percent of the criteria:
-        Store the qualified post into our database using the `store_reddit_problems` function.
-    Else:
-        If no problems where found let me know no problems were identified
+    Your input includes multiple Reddit posts, each with:
+    - Title
+    - Body
+    - Subreddit
+    - List of comments
+
+    Your objective:
+    1. Group posts by subreddit.
+    2. For each post:
+        - Analyze the title, body, and comments.
+        - Perform sentiment analysis on comments (internally).
+        - Check if comments indicate frequent, severe, or frustrating issues related to the post.
+    3. Apply selection criteria:
+        a. Frequency: Are multiple users experiencing the same issue?
+        b. Severity: Does the tone of comments indicate frustration or significant problems?
+        c. Clarity: Is the problem clearly explained in the post?
+        d. Feasibility: Can a realistic product or service solve it?
+    4. If no posts qualify, log "No problems identified."
 
     Output:
-    - Do not return or reframe the post.
     - Only log which posts were stored.
-    - At the end, append: "Total problems stored: <number>"
+    - Sentiment summary on each post
+    - Append: "Total problems stored: <number>"
     """

@@ -15,9 +15,12 @@ def fetch_reddit_posts() -> dict:
     Returns:
         dict: Contains list of posts with title, body, subreddit, and upvote_ratio
     """
-    subreddit_list: str = ["ghana"]
+    subreddit_list: str = ["startups"]
     limit: int = 10
     posts = []
+
+    for subs in subreddit_list:
+        logger.info(f"Fetching Posts from {subs} subreddit")
 
     try:
         for subreddit in subreddit_list:
@@ -29,8 +32,10 @@ def fetch_reddit_posts() -> dict:
                     "upvote_ratio": submission.upvote_ratio
                 }
                 posts.append(post)
+
         return posts
     
     except Exception as e:
         logger.error(f"Failed to fetch Reddit Posts: {e}")
-        return None
+        return []
+    

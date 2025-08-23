@@ -6,7 +6,7 @@ from utils.reddit.reddit_helpers import fetch_post_ids
 reddit = connect_to_reddit()
 
 
-def fetch_subreddit_comments():
+def fetch_subreddit_comments()->list[dict]:
     """
     Fetch all subreddit comments from a single Reddit submission
     """

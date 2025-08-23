@@ -5,7 +5,7 @@ from services.reddit_service import connect_to_reddit
 reddit = connect_to_reddit()
 
 
-def fetch_reddit_posts() -> dict:
+def fetch_reddit_posts() -> list[dict]:
     """
     Use fetch_reddit_posts when you want to retrieve current Reddit discussions for analyzing small business problems and challenges.
 
@@ -16,7 +16,7 @@ def fetch_reddit_posts() -> dict:
         dict: Contains list of posts with title, body, subreddit, and upvote_ratio
     """
     subreddit_list: str = ["startups"]
-    limit: int = 10
+    limit: int = 20
     posts = []
 
     for subs in subreddit_list:
@@ -27,6 +27,7 @@ def fetch_reddit_posts() -> dict:
             for submission in reddit.subreddit(subreddit).hot(limit=limit):
                 post = {
                     "subreddit": subreddit,
+                    "subredditID": submission.id,
                     "title":submission.title,
                     "body": submission.selftext,
                     "upvote_ratio": submission.upvote_ratio

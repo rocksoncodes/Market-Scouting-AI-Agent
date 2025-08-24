@@ -12,7 +12,7 @@ def fetch_reddit_comments()->list[dict]:
     Returns a list of dictionaries with comment data.
     """
 
-    function_name = "fetch_reddit_comments"
+    function_name = "fetch_reddit_comments()"
 
     submission_ids = fetch_post_ids()
     if not submission_ids:

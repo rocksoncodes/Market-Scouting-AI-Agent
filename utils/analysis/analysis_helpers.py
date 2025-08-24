@@ -13,7 +13,7 @@ def remove_stopwords() -> List[str]:
     Raises ValueError if no comments are available.
     """
 
-    function_name = "remove_stopwords"
+    function_name = "remove_stopwords()"
 
     try:
         comments_list = fetch_reddit_comments()

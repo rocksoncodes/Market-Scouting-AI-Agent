@@ -18,7 +18,7 @@ def run_scout_agent(query):
          config=provide_agent_tools(tools=[fetch_reddit_posts])
       )
 
-      logger.info("Market Scout Agent executed successfully.")
+      logger.info("Market Scout Agent executed successfully..")
       print(response.text)
 
    except Exception as e:

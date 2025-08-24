@@ -1,8 +1,8 @@
 from utils.logger import logger
-from services.reddit_service import connect_to_reddit
+from services.reddit_service import connect_to_reddit_singleton
 
 
-reddit = connect_to_reddit()
+reddit = connect_to_reddit_singleton()
 
 
 def fetch_reddit_posts() -> list[dict]:
@@ -15,28 +15,30 @@ def fetch_reddit_posts() -> list[dict]:
     Returns:
         dict: Contains list of posts with title, body, subreddit, and upvote_ratio
     """
+
     subreddit_list: str = ["startups"]
     limit: int = 20
     posts = []
 
-    for subs in subreddit_list:
-        logger.info(f"Fetching Posts from {subs} subreddit")
+    for subreddit_name in subreddit_list:
+        logger.info(f" Fetching posts from '{subreddit_name}' subreddit.")
+        subreddit_posts = list(reddit.subreddit(subreddit_name).hot(limit=limit))
+        logger.info(f" Retrieved {len(subreddit_posts)} posts from '{subreddit_name}' subreddit.")
 
     try:
-        for subreddit in subreddit_list:
-            for submission in reddit.subreddit(subreddit).hot(limit=limit):
-                post = {
-                    "subreddit": subreddit,
-                    "subredditID": submission.id,
-                    "title":submission.title,
-                    "body": submission.selftext,
-                    "upvote_ratio": submission.upvote_ratio
-                }
-                posts.append(post)
+        for submission in subreddit_posts:
+            posts.append({
+                "subreddit": subreddit_name,
+                "subredditID": submission.id,
+                "title": submission.title,
+                "body": submission.selftext,
+                "upvote_ratio": submission.upvote_ratio
+            })
 
+        logger.info(f"Completed fetching posts. Total posts collected: {len(posts)}")
         return posts
     
     except Exception as e:
-        logger.error(f"Failed to fetch Reddit Posts: {e}")
+        logger.error(f"Failed to fetch Reddit posts: {e}")
         return []
     

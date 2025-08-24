@@ -1,20 +1,26 @@
 from utils.logger import logger
-from services.reddit_service import connect_to_reddit
+from services.reddit_service import connect_to_reddit_singleton
 from utils.reddit.reddit_helpers import fetch_post_ids
 
 
-reddit = connect_to_reddit()
+reddit = connect_to_reddit_singleton()
 
 
-def fetch_subreddit_comments()->list[dict]:
+def fetch_reddit_comments()->list[dict]:
     """
-    Fetch all subreddit comments from a single Reddit submission
+    Fetch all subreddit comments from a list of Reddit submissions.
+    Returns a list of dictionaries with comment data.
     """
+
+    function_name = "fetch_reddit_comments"
 
     submission_ids = fetch_post_ids()
+    if not submission_ids:
+        logger.warning(f"[{function_name}] No submission IDs found. Returning empty list.")
+        return []
 
     comments_collected = []
-    logger.info(f"Fetching Post comments")
+    logger.info(f"Fetching post comments from {len(submission_ids)} submissions.")
 
     try:
         for submission_id in submission_ids:
@@ -30,12 +36,11 @@ def fetch_subreddit_comments()->list[dict]:
                         "body": comment.body,
                         "score": comment.score
                     })
-
                     count += 1
 
-        logger.info(f"Collected {len(comments_collected)} comments")
+        logger.info(f"Completed. Total comments collected: {len(comments_collected)}")
         return comments_collected
     
     except Exception as e:
        logger.error(f"Failed to fetch Reddit comments: {e}")
-       return None
+       return []

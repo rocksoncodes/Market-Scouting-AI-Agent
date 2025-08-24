@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 from utils.logger import logger
 
 
+_reddit_instance = None
+
+
 def validate_reddit_secrets(reddit_secrets: dict) -> bool:
     """
     Validate presence of Reddit API environment variables.
@@ -30,11 +33,15 @@ def validate_reddit_secrets(reddit_secrets: dict) -> bool:
     return True
 
 
-def connect_to_reddit():
+def connect_to_reddit() -> praw.Reddit | None:
     """
     Connect to Reddit API using PRAW and environment variables.
     Returns a Reddit instance if successful, otherwise None.
     """
+    global _reddit_instance
+    if _reddit_instance is not None:
+        return _reddit_instance 
+
     load_dotenv()
 
     client_id = os.getenv("REDDIT_CLIENT_ID")
@@ -63,3 +70,16 @@ def connect_to_reddit():
     except Exception as e:
         logger.exception(f"Failed to initialize Reddit client: {e}")
         return None
+    
+
+def connect_to_reddit_singleton():
+    """
+    Singleton wrapper to ensure only one Reddit client instance exists.
+    """
+    global _reddit_instance
+    if _reddit_instance is None:
+        logger.info(f"Creating new Reddit client instance.")
+        _reddit_instance = connect_to_reddit() 
+    else:
+        logger.info(f"Returning existing Reddit client instance.")
+    return _reddit_instance

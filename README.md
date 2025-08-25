@@ -1,4 +1,4 @@
-# Market Scouting AI Agent
+# Market Scouting AI Agent with Python
 #### For `Entrepreneurs & Developers` </br>
 
 

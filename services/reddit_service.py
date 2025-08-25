@@ -65,8 +65,10 @@ def connect_to_reddit() -> praw.Reddit | None:
         client_secret = client_secret,
         user_agent = user_agent
         )
+
         logger.info("Connection to the Reddit API was successful!")
         return reddit
+    
     except Exception as e:
         logger.exception(f"Failed to initialize Reddit client: {e}")
         return None
@@ -77,6 +79,7 @@ def connect_to_reddit_singleton():
     Singleton wrapper to ensure only one Reddit client instance exists.
     """
     global _reddit_instance
+
     if _reddit_instance is None:
         logger.info(f"Creating new Reddit client instance.")
         _reddit_instance = connect_to_reddit() 

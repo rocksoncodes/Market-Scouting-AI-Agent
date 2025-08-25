@@ -9,70 +9,82 @@ from utils.reddit.fetch_comments import fetch_reddit_comments
 from utils.logger import logger
 
 
-# Ensure necessary NLTK resources
-def ensure_nltk_resources():
-    """Download required NLTK resources if missing."""
-    try:
-        nltk.data.find('tokenizers/punkt')
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        logger.info("Downloading missing NLTK resources...")
-        nltk.download('punkt')
-        nltk.download('stopwords')
-
-
-def fetch_and_validate_comments() -> List[Dict[str, str]]:
-    """Fetch comments and validate the response."""
-    comments = fetch_reddit_comments()
-    if not isinstance(comments, list):
-        raise TypeError("Expected a list of comment dictionaries.")
-    return comments
-
-
-def tokenize_comments() -> List[List[str]]:
-    """Fetch comments and tokenize them into lists of words."""
-    try:
-        comment_collectible = fetch_and_validate_comments()
-        tokens = []
+class RedditCommentPreprocessor:
+    def __init__(self):
+        """Initialize and ensure necessary NLTK resources are available."""
+        self.ensure_nltk_resources()
+        self.comments: List[Dict[str, str]] = []
+        self.tokenized_comments: List[List[str]] = []
         
-        for comment in comment_collectible:
-            body = comment.get("body", "")
-            if not isinstance(body, str):
-                logger.warning(f"Skipping invalid comment body: {body}")
-                continue
+
+    def ensure_nltk_resources(self):
+        """Download required NLTK resources if missing."""
+        try:
+            nltk.data.find('tokenizers/punkt')
+            nltk.data.find('corpora/stopwords')
+        except LookupError:
+            logger.info("Downloading missing NLTK resources...")
+            nltk.download('punkt')
+            nltk.download('stopwords')
             
-            tokens.append(word_tokenize(body))
+            
+    def fetch_and_validate_comments(self) -> List[Dict[str, str]]:
+        """Fetch comments and validate the response."""
+        comments = fetch_reddit_comments()
+        if not isinstance(comments, list):
+            raise TypeError("Expected a list of comment dictionaries.")
+        self.comments = comments
+        return comments
+    
+    
+    def tokenize_comments(self) -> List[List[str]]:
+        """Fetch comments (if not already fetched) and tokenize them into lists of words."""
+        try:
+            if not self.comments:
+                self.fetch_and_validate_comments()
 
-        logger.info(f"Tokenized {len(tokens)} comments successfully.")
-        return tokens
+            tokens = []
+            for comment in self.comments:
+                body = comment.get("body", "")
+                if not isinstance(body, str):
+                    logger.warning(f"Skipping invalid comment body: {body}")
+                    continue
+                tokens.append(word_tokenize(body))
 
-    except Exception as e:
-        logger.error(f"Error during tokenization: {e}", exc_info=True)
-        return []
+            self.tokenized_comments = tokens
+            logger.info(f"Tokenized {len(tokens)} comments successfully.")
+            return tokens
 
+        except Exception as e:
+            logger.error(f"Error during tokenization: {e}", exc_info=True)
+            return []
+        
+        
+    def remove_punctuation(self) -> str:
+        """Remove punctuation from previously tokenized comments."""
+        try:
+            if not self.tokenized_comments:
+                self.tokenize_comments() 
 
-def remove_punctuation() -> str:
-    """Tokenize comments and remove punctuation."""
-    try:
-        tokenized_comments = tokenize_comments()
-        if not tokenized_comments:
-            logger.warning("No tokenized comments available to process.")
+            filtered_tokens = [
+                word for comment_tokens in self.tokenized_comments
+                for word in comment_tokens
+                if word not in string.punctuation
+            ]
+
+            self.tokenized_comments = filtered_tokens
+            logger.info(f"Removed punctuation from {len(filtered_tokens)} tokens.")
+            return filtered_tokens
+
+        except Exception as e:
+            logger.error(f"Error during punctuation removal: {e}", exc_info=True)
             return ""
 
-        filtered_tokens = []
-        for comment_tokens in tokenized_comments:
-            for word in comment_tokens:
-                if word not in string.punctuation:
-                    filtered_tokens.append(word)
 
-        processed_comments = " ".join(filtered_tokens)
-        logger.info(f"Processed comments length: {len(processed_comments)} characters.")
-        return processed_comments
-
-    except Exception as e:
-        logger.error(f"Error during punctuation removal: {e}", exc_info=True)
-        return ""
-
+"""
+TODO(rocksoncodes): [Medium] 
+Revise this function before integrating it into the reddit preprocessor pipeline
+"""
 
 def remove_stopwords() -> List[str]:
     """
@@ -117,7 +129,3 @@ def remove_stopwords() -> List[str]:
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return[]
-
-
-# Initialize NLTK resources
-ensure_nltk_resources()

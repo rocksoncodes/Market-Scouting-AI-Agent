@@ -13,7 +13,7 @@ Instead of wasting hours on research, you can focus on what you do best: buildin
 
 Imagine this:</br>
 
-You push code to GitHub → Market Scout runs automatically → Within minutes, your Notion updates with 10 real-world validated problems.</br>
+You push your code to GitHub → Market Scout runs automatically → Within minutes, your Notion updates with 10 real-world validated problems.</br>
 
 That’s hours of manual research done while you work on something else or even sleep.</br>
 

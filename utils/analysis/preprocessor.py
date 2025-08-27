@@ -14,7 +14,7 @@ class RedditCommentPreprocessor:
         """Initialize and ensure necessary NLTK resources are available."""
         self.ensure_nltk_resources()
         self.comments: List[Dict[str, str]] = []
-        self.tokenized_comments: List[List[str]] = []
+        self.processed_data: List[List[str]] = []
         
 
     def ensure_nltk_resources(self):
@@ -51,7 +51,7 @@ class RedditCommentPreprocessor:
                     continue
                 tokens.append(word_tokenize(body))
 
-            self.tokenized_comments = tokens
+            self.processed_data = tokens
             logger.info(f"Tokenized {len(tokens)} comments successfully.")
             return tokens
 
@@ -59,26 +59,28 @@ class RedditCommentPreprocessor:
             logger.error(f"Error during tokenization: {e}", exc_info=True)
             return []
         
-        
-    def remove_punctuation(self) -> str:
+    
+    def remove_punctuation(self) -> list[list[str]]:
         """Remove punctuation from previously tokenized comments."""
         try:
-            if not self.tokenized_comments:
-                self.tokenize_comments() 
+            if not self.processed_data:
+                self.tokenize_comments()
 
-            filtered_tokens = [
-                word for comment_tokens in self.tokenized_comments
-                for word in comment_tokens
-                if word not in string.punctuation
-            ]
+            cleaned_comments = []
+            for comment_tokens in self.processed_data:
+                cleaned_comment = []
+                for token in comment_tokens:
+                    if token not in string.punctuation:
+                        cleaned_comment.append(token)
+                cleaned_comments.append(cleaned_comment)
 
-            self.tokenized_comments = filtered_tokens
-            logger.info(f"Removed punctuation from {len(filtered_tokens)} tokens.")
-            return filtered_tokens
+            self.processed_data = cleaned_comments
+            logger.info(f"Removed punctuation from comments. Total comments: {len(cleaned_comments)}")
+            return cleaned_comments
 
         except Exception as e:
             logger.error(f"Error during punctuation removal: {e}", exc_info=True)
-            return ""
+            return []
 
 
 """

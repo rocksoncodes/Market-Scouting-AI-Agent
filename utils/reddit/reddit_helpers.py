@@ -1,7 +1,8 @@
+from typing import List
 from utils.reddit.fetch_posts import fetch_reddit_posts
 
 
-def fetch_post_ids()->list[str]:
+def fetch_post_ids() -> List[str]:
 
     """
     Returns all submission ids from the `fetch_reddit_posts()` functions

@@ -44,3 +44,6 @@ def fetch_reddit_comments()->list[dict]:
     except Exception as e:
        logger.error(f"Failed to fetch Reddit comments: {e}")
        return []
+   
+   
+   

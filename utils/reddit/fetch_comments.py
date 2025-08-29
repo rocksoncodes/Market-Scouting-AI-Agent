@@ -1,3 +1,4 @@
+from typing import Dict, List
 from utils.logger import logger
 from services.reddit_service import connect_to_reddit_singleton
 from utils.reddit.reddit_helpers import fetch_post_ids
@@ -6,7 +7,7 @@ from utils.reddit.reddit_helpers import fetch_post_ids
 reddit = connect_to_reddit_singleton()
 
 
-def fetch_reddit_comments()->list[dict]:
+def fetch_reddit_comments() -> List[Dict[str: str]]:
     """
     Fetch all subreddit comments from a list of Reddit submissions.
     Returns a list of dictionaries with comment data.

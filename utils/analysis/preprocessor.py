@@ -17,7 +17,7 @@ class RedditCommentPreprocessor:
         self.processed_data: List[List[str]] = []
         
 
-    def ensure_nltk_resources(self):
+    def ensure_nltk_resources(self) -> None:
         """Download required NLTK resources if missing."""
         try:
             nltk.data.find('tokenizers/punkt')

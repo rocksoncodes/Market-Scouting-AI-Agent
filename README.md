@@ -1,14 +1,22 @@
-# Market Scouting AI Agent
+# Market Scout – The AI Agent That Finds Market Problems for You
 #### For `Entrepreneurs & Developers` </br>
-Automatically discovers market problems so you can focus on building solutions instead of hunting for ideas.
+
+If you’ve ever spent hours scrolling through forums, hoping to find a real problem worth solving you know how exhausting it feels.
+
+That’s why I built Market Scout: an AI-powered agent that does the research for you. It scans Reddit communities, finds pain points people are actually talking about and uses Gemini AI to validate whether those problems are worth your time.
+
+Instead of wasting hours on research, you can focus on what you do best: building solutions people love.
+
 
 
 ## 1. How Market Scout Works (Overview)
 
-Entrepreneurs and developers spend hours manually searching forums and communities, trying to find problems worth solving.
-Because this process takes so much time, I'm building Market Scout to automatically discover, filter, and structure market problems into actionable project briefs.
+Imagine this:</br>
 
-This way, users can focus on building solutions instead of hunting for ideas, saving time and increasing productivity.
+You push your code to GitHub → Market Scout runs automatically → Within minutes, your Notion updates with 10 real-world validated problems.</br>
+
+That’s hours of manual research done while you work on something else or even sleep.</br>
+
 This repository contains the initial project setup; more updates and implementations will be added throughout development.
 
 ## 2. Current Features
@@ -67,10 +75,10 @@ GEMINI_API_KEY         # Gemini LLM API key
 
 ## 5. Current Capabilities
 
-- Reddit Data Collection: Fetches relevant posts from configured subreddits
+- Reddit Post Data Collection: Fetches relevant posts from configured subreddits
+- Reddit Comment Data Collection: Fetches relevant comments from configured subreddit posts
+- Reddit Data Processing: Processes relevant reddit posts and comments using Python's nltk library.
 - Problem Validation: Uses Gemini AI to evaluate problem validity
-- Market Analysis: Analyzes post engagement and sentiment
-- Structured Output: Formats identified problems into actionable briefs
 
 ## 6. Development Status
 
@@ -79,8 +87,9 @@ Current branch: `MSAA-001-Reddit-Scrapper-Implementation`
 - ✅ Reddit API integration
 - ✅ Gemini AI integration
 - ✅ Reddit data collection
-- ✅ Problem validation system
-- 🔄 Market sentiment analysis
+- 🔄 Reddit data processing
+- 📝 Market sentiment analysis
+- 📝 Problem validation system
 - 📝 Reddit data storage 
 
 ## 7. Contributing

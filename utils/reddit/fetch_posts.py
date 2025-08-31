@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 from utils.logger import logger
 from services.reddit_service import connect_to_reddit_singleton
 
@@ -6,7 +6,7 @@ from services.reddit_service import connect_to_reddit_singleton
 reddit = connect_to_reddit_singleton()
 
 
-def fetch_reddit_posts() -> List[Dict[str:str]]:
+def fetch_reddit_posts() -> List[Dict[str, Any]]:
     """
     Use fetch_reddit_posts when you want to retrieve current Reddit discussions for analyzing small business problems and challenges.
 
@@ -18,7 +18,7 @@ def fetch_reddit_posts() -> List[Dict[str:str]]:
     """
 
     subreddit_list: str = ["startups"]
-    limit: int = 20
+    limit: int = 1
     posts = []
 
     for subreddit_name in subreddit_list:

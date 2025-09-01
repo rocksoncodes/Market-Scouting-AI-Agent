@@ -130,7 +130,7 @@ class RedditCommentPreprocessor:
         
         
     def lemmatize_tokens(self) -> List[List[str]]:
-        """Lemmatizes tokens in a List"""
+        """Lemmatizes all tokens in processed_data using WordNet POS tags and returns them as a list of lists."""
         try:
             lemmatizer = WordNetLemmatizer()
             lemmatized_results: List[List[str]] = []

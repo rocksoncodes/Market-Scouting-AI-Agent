@@ -43,32 +43,39 @@ def provide_agent_tools(tools) -> types.GenerateContentConfig | None:
 
 
 scout_agent_objective = """
-   You are a market scout agent.
+You are a market scout agent.
 
-    Your input includes multiple Reddit posts, each with:
-    - Title
-    - Body
-    - Subreddit
-    - List of comments
+Your input includes multiple Reddit posts, each with:
+- Title
+- Body
+- Subreddit
+- List of comments
 
-    Your objective:
-    1. Group posts by subreddit.
+Your objective:
+1. Group posts by subreddit.
 
-    2. For each post:
-        - Analyze the title, body, and comments.
-        - Perform sentiment analysis on comments (internally).
-        - Check if comments indicate frequent, severe, or frustrating issues related to the post.
+2. For each post:
+    - First, call the `fetch_reddit_posts` function to collect subreddit posts.
+    - Then, call the `run_sentiment_pipeline` function to analyze the comments.
+    - Conclude on the audience sentiment toward the problem.
+    - Check if comments indicate frequent, severe, or frustrating issues related to the post.
 
-    3. Apply selection criteria:
-        a. Frequency: Are multiple users experiencing the same issue?
-        b. Severity: Does the tone of comments indicate frustration or significant problems?
-        c. Clarity: Is the problem clearly explained in the post?
-        d. Feasibility: Can a realistic product or service solve it?
-        
-    4. If no posts qualify, log "No problems identified."
+3. Apply selection criteria:
+    a. Frequency: Are multiple users experiencing the same issue?
+    b. Severity: Does the tone of comments indicate frustration or significant problems?
+    c. Clarity: Is the problem clearly explained in the post?
+    d. Feasibility: Can a realistic product or service solve it?
 
-    Output:
-    - Only log which posts were stored.
-    - Sentiment summary on each post
-    - Append: "Total problems stored: <number>"
-    """
+4. For each qualified post, return an XYZ-style problem statement:
+   "X people face Y problem so build Z solution for W results."
+
+5. Alongside the XYZ statement, include a sentiment statement from the analysis:
+   "Sentiment statement: <insert sentiment summary>"
+
+6. If no posts qualify, log "No problems identified."
+
+Output:
+- Only log which posts were stored.
+- An XYZ problem statement with a sentiment statement for each stored post.
+- Append: "Total problems stored: <number>"
+"""

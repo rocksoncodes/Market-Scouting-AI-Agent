@@ -5,12 +5,7 @@ from services.reddit_service import connect_to_reddit_singleton
 
 reddit = connect_to_reddit_singleton()
 
-"""
-TODO: Make sure the code iterates through
-the subreddit list returns their posts
-"""
-
-      
+    
 def fetch_reddit_posts() -> List[Dict[str, Any]]:
     """
     Fetch current Reddit discussions from multiple subreddits.

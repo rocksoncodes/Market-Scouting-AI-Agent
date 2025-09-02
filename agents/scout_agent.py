@@ -1,6 +1,7 @@
 from services.gemini_service import initialize_gemini, provide_agent_tools
 from utils.reddit.fetch_posts import fetch_reddit_posts
 from utils.analysis.coordinate import run_sentiment_pipeline
+from google.genai import errors
 from utils.logger import logger
 
 
@@ -21,6 +22,10 @@ def run_scout_agent(query):
 
       logger.info("Market Scout Agent executed successfully..")
       print(response.text)
+      
+   except errors.ServerError as e:
+      logger.error(f"Gemini server error: {e}")
+      return {"error": "Model temporarily unavailable. Please try again later."}
 
    except Exception as e:
       logger.exception(f"Unexpected error while running Market Scout Agent: {e}")

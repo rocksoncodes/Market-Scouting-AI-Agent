@@ -25,8 +25,6 @@ class RedditCommentSentiment:
         except LookupError:
             logger.info("Downloading VADER lexicon...")
             nltk.download("vader_lexicon")
-        finally:
-            logger.info("VADER lexicon download complete...")
             
 
     def fetch_and_validate_comments(self) -> List[Dict[str, str]]:
@@ -50,24 +48,28 @@ class RedditCommentSentiment:
         sentiment_results: List[Dict[str, str]] = []
 
         for comment in self.comments:
-            text = comment.get("body", "")
-            if not isinstance(text, str) or not text.strip():
-                logger.warning(f"Skipping invalid or empty comment: {comment}")
-                continue
+            try:
+                text = comment.get("body", "")
+                if not isinstance(text, str) or not text.strip():
+                    logger.warning(f"Skipping invalid or empty comment: {comment}")
+                    continue
 
-            score = self.sia.polarity_scores(text)
-            if score["compound"] > 0.05:
-                label = "Positive"
-            elif score["compound"] < -0.05:
-                label = "Negative"
-            else:
-                label = "Neutral"
+                score = self.sia.polarity_scores(text)
+                if score["compound"] > 0.05:
+                    label = "Positive"
+                elif score["compound"] < -0.05:
+                    label = "Negative"
+                else:
+                    label = "Neutral"
 
-            sentiment_results.append({
-                "comment_id": comment.get("id"),
-                "text": text,
-                "sentiment": {"compound": score["compound"], "label": label}
-            })
+                sentiment_results.append({
+                    "comment_id": comment.get("id"),
+                    "text": text,
+                    "sentiment": {"compound": score["compound"], "label": label}
+                })
+                
+            except Exception as e:
+                logger.error(f"Error analyzing comment {comment}: {e}")
 
         return sentiment_results
     
@@ -80,33 +82,39 @@ class RedditCommentSentiment:
 
         sentiment_labels = []
         compound_scores = []
+        
+        try:
 
-        for result in sentiment_results:
-            sentiment = result.get("sentiment", {})
-            if "label" in sentiment and "compound" in sentiment:
-                sentiment_labels.append(sentiment["label"])
-                compound_scores.append(sentiment["compound"])
+            for result in sentiment_results:
+                sentiment = result.get("sentiment", {})
+                if "label" in sentiment and "compound" in sentiment:
+                    sentiment_labels.append(sentiment["label"])
+                    compound_scores.append(sentiment["compound"])
 
-        label_counts = Counter()
-        for label in sentiment_labels:
-            label_counts[label] += 1
+            label_counts = Counter()
+            for label in sentiment_labels:
+                label_counts[label] += 1
 
-        if compound_scores:
-            average_compound = sum(compound_scores) / len(compound_scores)
-        else:
-            average_compound = 0.0
+            if compound_scores:
+                average_compound = sum(compound_scores) / len(compound_scores)
+            else:
+                average_compound = 0.0
 
-        if label_counts:
-            dominant_sentiment = label_counts.most_common(1)[0][0]
-        else:
-            dominant_sentiment = "Neutral"
+            if label_counts:
+                dominant_sentiment = label_counts.most_common(1)[0][0]
+            else:
+                dominant_sentiment = "Neutral"
 
-        summary = {
-            "dominant_sentiment": dominant_sentiment,
-            "avg_compound": average_compound,
-            "counts": dict(label_counts),
-            "total_comments": len(sentiment_results),
-        }
+            summary = {
+                "dominant_sentiment": dominant_sentiment,
+                "avg_compound": average_compound,
+                "counts": dict(label_counts),
+                "total_comments": len(sentiment_results),
+            }
 
-        logger.info("Post sentiment summary: %s", summary)
+            logger.info("Post sentiment summary: %s", summary)
+            
+        except Exception as e:
+            logger.error(f"Error summarizing post sentiment: {e}")
+            
         return {"summary": summary}

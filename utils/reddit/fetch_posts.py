@@ -5,41 +5,39 @@ from services.reddit_service import connect_to_reddit_singleton
 
 reddit = connect_to_reddit_singleton()
 
+"""
+TODO: Make sure the code iterates through
+the subreddit list returns their posts
+"""
 
+      
 def fetch_reddit_posts() -> List[Dict[str, Any]]:
     """
-    Use fetch_reddit_posts when you want to retrieve current Reddit discussions for analyzing small business problems and challenges.
-
-    This function uses predefined settings:
-    - No parameters required - call directly when you need current posts
-
-    Returns:
-        dict: Contains list of posts with title, body, subreddit, and upvote_ratio
+    Fetch current Reddit discussions from multiple subreddits.
     """
-
-    subreddit_list: str = ["smallbusiness"]
-    limit: int = 40
-    posts = []
+    subreddit_list: List[str] = ["smallbusiness", "freelance","recruitinghell"]
+    limit: int = 5
+    posts: List[Dict[str, Any]] = []
 
     for subreddit_name in subreddit_list:
-        logger.info(f" Fetching posts from '{subreddit_name}' subreddit.")
-        subreddit_posts = list(reddit.subreddit(subreddit_name).hot(limit=limit))
-        logger.info(f" Retrieved {len(subreddit_posts)} posts from '{subreddit_name}' subreddit.")
+        logger.info(f"Fetching posts from '{subreddit_name}' subreddit.")
+        try:
+            subreddit_posts = list(reddit.subreddit(subreddit_name).hot(limit=limit))
+            logger.info(f"Retrieved {len(subreddit_posts)} posts from '{subreddit_name}' subreddit.")
 
-    try:
-        for submission in subreddit_posts:
-            posts.append({
-                "subreddit": subreddit_name,
-                "subredditID": submission.id,
-                "title": submission.title,
-                "body": submission.selftext,
-                "upvote_ratio": submission.upvote_ratio
-            })
+            for submission in subreddit_posts:
+                posts.append({
+                    "subreddit": subreddit_name,
+                    "subredditID": submission.id,
+                    "title": submission.title,
+                    "body": submission.selftext,
+                    "upvote_ratio": submission.upvote_ratio
+                })
 
-        logger.info(f"Completed fetching posts. Total posts collected: {len(posts)}")
-        return posts
-    
-    except Exception as e:
-        logger.error(f"Failed to fetch Reddit posts: {e}")
-        return []
+        except Exception as e:
+            logger.error(f"Failed to fetch posts from '{subreddit_name}': {e}")
+
+    logger.info(f"Completed fetching posts. Total posts collected: {len(posts)}")
+    return posts
+
     

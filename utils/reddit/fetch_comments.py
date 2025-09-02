@@ -21,7 +21,7 @@ def fetch_reddit_comments() -> List[Dict[str, Any]]:
         return []
 
     comments_collected = []
-    logger.info(f"Fetching post comments from {len(submission_ids)} submissions.")
+    logger.info(f"Fetching comments from {len(submission_ids)} submissions.")
 
     try:
         for submission_id in submission_ids:

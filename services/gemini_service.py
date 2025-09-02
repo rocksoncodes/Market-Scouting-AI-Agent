@@ -70,7 +70,7 @@ Your objective:
    "X people face Y problem so build Z solution for W results."
 
 5. Alongside the XYZ statement, include a sentiment statement from the analysis:
-   "Sentiment statement: <insert sentiment summary>"
+   "Sentiment statement: Sentiment towards [X: Entity/Topic] is predominantly [Y: Sentiment Label], with users [Z: Key themes, opinions, or concerns drawn from the discussion]."
 
 6. If no posts qualify, log "No problems identified."
 

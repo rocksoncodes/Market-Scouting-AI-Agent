@@ -3,7 +3,7 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from collections import Counter
 
-from utils.reddit.scraper import RedditScraper
+from utils.scraping.ochestrate import run_reddit_scraper
 from utils.logger import logger
 
 
@@ -32,10 +32,8 @@ class RedditCommentSentiment:
         """
         Use RedditScraper to fetch posts and comments.
         """
-        scraper = RedditScraper()
-        scraper.fetch_reddit_posts()
-        scraper.fetch_post_ids()
-        comments = scraper.fetch_reddit_comments()
+        scraper = run_reddit_scraper()
+        comments = scraper.get("comments")
 
         if not isinstance(comments, list):
             raise TypeError("Expected a list of comment dictionaries.")

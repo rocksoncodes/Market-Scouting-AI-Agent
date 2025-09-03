@@ -3,7 +3,7 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from collections import Counter
 
-from utils.reddit.fetch_comments import fetch_reddit_comments
+from utils.reddit.scraper import RedditScraper
 from utils.logger import logger
 
 
@@ -15,6 +15,7 @@ class RedditCommentSentiment:
         self.ensure_nltk_resources()
         self.comments: List[Dict[str, str]] = []
         self.sia = SentimentIntensityAnalyzer()
+        
 
     def ensure_nltk_resources(self) -> None:
         """
@@ -29,11 +30,16 @@ class RedditCommentSentiment:
 
     def fetch_and_validate_comments(self) -> List[Dict[str, str]]:
         """
-        Fetch comments and validate the response structure.
+        Use RedditScraper to fetch posts and comments.
         """
-        comments = fetch_reddit_comments()
+        scraper = RedditScraper()
+        scraper.fetch_reddit_posts()
+        scraper.fetch_post_ids()
+        comments = scraper.fetch_reddit_comments()
+
         if not isinstance(comments, list):
             raise TypeError("Expected a list of comment dictionaries.")
+
         self.comments = comments
         return comments
     
@@ -55,6 +61,7 @@ class RedditCommentSentiment:
                     continue
 
                 score = self.sia.polarity_scores(text)
+
                 if score["compound"] > 0.05:
                     label = "Positive"
                 elif score["compound"] < -0.05:
@@ -63,11 +70,12 @@ class RedditCommentSentiment:
                     label = "Neutral"
 
                 sentiment_results.append({
-                    "comment_id": comment.get("id"),
+                    "submission_id": comment.get("submission_id"),
+                    "author": comment.get("author"),
                     "text": text,
                     "sentiment": {"compound": score["compound"], "label": label}
                 })
-                
+
             except Exception as e:
                 logger.error(f"Error analyzing comment {comment}: {e}")
 
@@ -76,15 +84,14 @@ class RedditCommentSentiment:
 
     def summarize_post_sentiment(self) -> Dict:
         """
-        Aggregate sentiment results for the currently loaded comments.
+        Aggregate sentiment results for all loaded comments.
         """
         sentiment_results = self.analyze_sentiment()
 
         sentiment_labels = []
         compound_scores = []
-        
-        try:
 
+        try:
             for result in sentiment_results:
                 sentiment = result.get("sentiment", {})
                 if "label" in sentiment and "compound" in sentiment:
@@ -113,8 +120,9 @@ class RedditCommentSentiment:
             }
 
             logger.info("Post sentiment summary: %s", summary)
-            
+
         except Exception as e:
             logger.error(f"Error summarizing post sentiment: {e}")
-            
+            summary = {}
+
         return {"summary": summary}

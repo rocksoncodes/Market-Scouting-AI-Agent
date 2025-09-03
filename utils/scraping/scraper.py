@@ -7,13 +7,15 @@ class RedditScraper:
     
     DEFAULT_SUBREDDITS: List[str] = ["smallbusiness"]
     DEFAULT_POST_LIMIT: int = 5
-    DEFAULT_COMMENT_LIMIT: int = 30
+    DEFAULT_COMMENT_LIMIT: int = 5
+    
 
     def __init__(self):
         self.reddit = connect_to_reddit_singleton()
         self.posts: List[Dict[str, Any]] = []
         self.submission_ids: List[str] = []
         self.comments: List[Dict[str, Any]] = []
+        
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
         """

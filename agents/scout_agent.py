@@ -1,6 +1,6 @@
 from services.gemini_service import initialize_gemini, provide_agent_tools
-from utils.analysis.coordinate import run_sentiment_pipeline
-from utils.reddit.ochestrate import run_reddit_scraper
+from services.sentiment_service import run_sentiment_pipeline
+from services.scraper_service import run_reddit_scraper
 from google.genai import errors
 from utils.logger import logger
 

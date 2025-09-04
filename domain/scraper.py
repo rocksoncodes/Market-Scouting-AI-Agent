@@ -1,21 +1,22 @@
 from typing import Dict, List, Any
+from config import settings
 from utils.logger import logger
 from services.reddit_service import connect_to_reddit_singleton
 
 
 class RedditScraper:
     
-    DEFAULT_SUBREDDITS: List[str] = ["smallbusiness"]
-    DEFAULT_POST_LIMIT: int = 5
-    DEFAULT_COMMENT_LIMIT: int = 5
+    DEFAULT_SUBREDDITS: List[str] = settings.DEFAULT_SUBREDDITS
+    DEFAULT_POST_LIMIT: int = settings.DEFAULT_POST_LIMIT
+    DEFAULT_COMMENT_LIMIT: int = settings.DEFAULT_COMMENT_LIMIT
     
-
+    
     def __init__(self):
         self.reddit = connect_to_reddit_singleton()
         self.posts: List[Dict[str, Any]] = []
         self.submission_ids: List[str] = []
         self.comments: List[Dict[str, Any]] = []
-        
+         
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
         """

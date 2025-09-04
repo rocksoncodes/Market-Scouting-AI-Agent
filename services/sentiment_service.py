@@ -1,6 +1,6 @@
-
-from utils.analysis.sentiment import RedditCommentSentiment
+from domain.sentiment import RedditSentiment
 from utils.logger import logger
+
 
 def run_sentiment_pipeline() -> dict:
     """
@@ -25,7 +25,7 @@ def run_sentiment_pipeline() -> dict:
     try:
         logger.info("Starting sentiment pipeline...")
         
-        processor = RedditCommentSentiment()
+        processor = RedditSentiment()
         processor.fetch_and_validate_comments()
         per_comment = processor.analyze_sentiment()
         summary = processor.summarize_post_sentiment()

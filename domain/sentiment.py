@@ -3,11 +3,11 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from collections import Counter
 
-from utils.scraping.ochestrate import run_reddit_scraper
+from services.scraper_service import run_reddit_scraper
 from utils.logger import logger
 
 
-class RedditCommentSentiment:
+class RedditSentiment:
     def __init__(self):
         """
         Initialize sentiment analyzer and ensure required NLTK resources.

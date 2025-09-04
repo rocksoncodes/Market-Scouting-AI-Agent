@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from utils.scraping.scraper import RedditScraper
+from domain.scraper import RedditScraper
 from utils.logger import logger
 
 

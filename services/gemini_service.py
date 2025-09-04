@@ -1,5 +1,4 @@
-import os
-from dotenv import load_dotenv
+from config import settings
 from utils.logger import logger
 from google import genai
 from google.genai import types
@@ -10,9 +9,8 @@ def initialize_gemini() -> genai.Client:
     Initialize Gemini client using API key from environment variables.
     Returns a genai.Client instance if successful, otherwise exits.
     """
-    load_dotenv()
 
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = settings.GEMINI_API_KEY
     if not api_key:
         logger.error("GEMINI_API_KEY not found in environment variables.")
         raise SystemExit("Startup failed: Please set your GEMINI_API_KEY to initialize the agent.")
@@ -55,7 +53,7 @@ Your objective:
 1. Group posts by subreddit.
 
 2. For each post:
-    - First, call the `fetch_reddit_posts` function to collect subreddit posts.
+    - First, call the `run_reddit_scraper` function to collect subreddit posts.
     - Then, call the `run_sentiment_pipeline` function to analyze the comments.
     - Conclude on the audience sentiment toward the problem.
     - Check if comments indicate frequent, severe, or frustrating issues related to the post.

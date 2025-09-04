@@ -1,5 +1,6 @@
 import os
 import praw
+from config import settings
 from dotenv import load_dotenv
 from utils.logger import logger
 
@@ -44,9 +45,9 @@ def connect_to_reddit() -> praw.Reddit | None:
 
     load_dotenv()
 
-    client_id = os.getenv("REDDIT_CLIENT_ID")
-    client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-    user_agent = os.getenv("REDDIT_USER_AGENT")
+    client_id = settings.REDDIT_CLIENT_ID
+    client_secret = settings.REDDIT_CLIENT_SECRET
+    user_agent = settings.REDDIT_USER_AGENT
 
     reddit_secrets = {
         "REDDIT_CLIENT_ID":  client_id,

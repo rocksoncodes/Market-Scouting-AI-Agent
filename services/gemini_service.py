@@ -31,7 +31,7 @@ def provide_agent_tools(tools) -> types.GenerateContentConfig | None:
     Returns the config if successful, otherwise None.
     """
     try:
-        config=types.GenerateContentConfig(tools=tools)
+        config=types.GenerateContentConfig(tools=tools, response_mime_type="application/json")
         logger.info(f"Agent tools configured successfully with {len(tools)} tool(s).")
         return config
         

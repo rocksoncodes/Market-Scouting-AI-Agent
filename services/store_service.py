@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from database.database import database_engine, Post, Comment
+from database.models import database_engine, Post, Comment
 from utils.logger import logger
 
 

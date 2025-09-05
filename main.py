@@ -1,5 +1,5 @@
 from config import settings
-from agents.scout import run_scout_agent
+from agents.scout_agent import run_scout_agent
 
 def main():
     """

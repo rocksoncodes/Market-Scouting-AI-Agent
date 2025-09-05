@@ -1,4 +1,3 @@
-import json
 from services.gemini_service import initialize_gemini, provide_agent_tools
 from services.scraper_service import run_reddit_scraper
 from services.sentiment_service import run_sentiment_pipeline

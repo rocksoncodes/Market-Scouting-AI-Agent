@@ -1,6 +1,5 @@
-from agents.scout_agent import run_scout_agent
 from config import settings
-from services.gemini_service import scout_agent_objective
+from agents.scout import run_scout_agent
 
 def main():
     """

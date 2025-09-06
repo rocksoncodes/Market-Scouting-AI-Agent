@@ -1,11 +1,7 @@
-from config import settings
-from agents.scout_agent import run_scout_agent
+from services.scraper_service import scrape_and_store
 
 def main():
-    """
-    Run the market scout agent with the given objective.
-    """
-    run_scout_agent(settings.SCOUT_OBJECTIVE)
+    scrape_and_store()
 
 if __name__ == "__main__":
     main()

@@ -16,8 +16,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 DEFAULT_SUBREDDITS: List[str] = ["smallbusiness"]
-DEFAULT_POST_LIMIT: int = 5
-DEFAULT_COMMENT_LIMIT: int = 5
+DEFAULT_POST_LIMIT: int = 50
+DEFAULT_COMMENT_LIMIT: int = 100
 
 SCOUT_OBJECTIVE = """
 You are a market scout agent.

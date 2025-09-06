@@ -26,6 +26,7 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pydantic==2.11.7
 pydantic_core==2.33.2
+PyMySQL==1.1.2
 python-dotenv==1.1.1
 regex==2025.7.34
 requests==2.32.4

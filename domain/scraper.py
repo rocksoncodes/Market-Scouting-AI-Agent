@@ -5,14 +5,13 @@ from services.reddit_service import connect_to_reddit_singleton
 
 
 class RedditScraper:
-    
-    DEFAULT_SUBREDDITS: List[str] = settings.DEFAULT_SUBREDDITS
-    DEFAULT_POST_LIMIT: int = settings.DEFAULT_POST_LIMIT
-    DEFAULT_COMMENT_LIMIT: int = settings.DEFAULT_COMMENT_LIMIT
-    
-    
     def __init__(self):
         self.reddit = connect_to_reddit_singleton()
+        
+        self.subreddits: List[str] = settings.DEFAULT_SUBREDDITS
+        self.post_limit: int = settings.DEFAULT_POST_LIMIT
+        self.comment_limit: int = settings.DEFAULT_COMMENT_LIMIT
+        
         self.posts: List[Dict[str, Any]] = []
         self.submission_ids: List[str] = []
         self.comments: List[Dict[str, Any]] = []
@@ -30,10 +29,10 @@ class RedditScraper:
 
         posts: List[Dict[str, Any]] = []
 
-        for subreddit_name in self.DEFAULT_SUBREDDITS:
-            logger.info(f"Fetching posts from r/{subreddit_name} (limit={self.DEFAULT_POST_LIMIT})...")
+        for subreddit_name in self.subreddits:
+            logger.info(f"Fetching posts from r/{subreddit_name} (limit={self.post_limit})...")
             try:
-                subreddit_posts = list(self.reddit.subreddit(subreddit_name).hot(limit=self.DEFAULT_POST_LIMIT))
+                subreddit_posts = list(self.reddit.subreddit(subreddit_name).hot(limit=self.post_limit))
                 logger.info(f"Retrieved {len(subreddit_posts)} posts from r/{subreddit_name}.")
 
                 for submission in subreddit_posts:
@@ -96,8 +95,8 @@ class RedditScraper:
                 submission.comments.replace_more(limit=0)
 
                 comments = submission.comments.list()
-                if self.DEFAULT_COMMENT_LIMIT:
-                    comments = comments[:self.DEFAULT_COMMENT_LIMIT]
+                if self.comment_limit:
+                    comments = comments[:self.comment_limit]
 
                 count = 0
                 for comment in comments:

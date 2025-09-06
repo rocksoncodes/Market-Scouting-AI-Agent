@@ -1,7 +1,6 @@
 from services.gemini_service import initialize_gemini, provide_agent_tools
 from services.scraper_service import run_reddit_scraper
 from services.sentiment_service import run_sentiment_pipeline
-from services.store_service import store_reddit_data
 from google.genai import errors
 from utils.logger import logger
 
@@ -27,6 +26,12 @@ def run_scout_agent(query):
    except errors.ServerError as e:
       logger.error(f"Gemini server error: {e}")
       return {"error": "Model temporarily unavailable. Please try again later."}
+   
+   except errors.ClientError as e:
+    if "RESOURCE_EXHAUSTED" in str(e):
+        logger.error("Quota exceeded. Try again after reset or switch models.")
+        return {"error": "Quota exceeded"}
+    raise
 
    except Exception as e:
       logger.exception(f"Unexpected error while running Market Scout Agent: {e}")

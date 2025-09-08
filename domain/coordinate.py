@@ -1,6 +1,5 @@
 from domain.scraper import RedditScraper
 from domain.storage import RedditStorage
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import Dict, Any
 from utils.logger import logger
 
@@ -57,32 +56,14 @@ class RedditCoordinate:
         logger.info("[PIPELINE] Step 1/2: Storing posts")
         try:
             self.storage.store_posts(reddit_data)
-            
-        except IntegrityError as e:
-            self.storage.session.rollback()
-            logger.error(f"Integrity error while storing posts: {e}")
-            
-        except SQLAlchemyError as e:
-            self.storage.session.rollback()
-            logger.error(f"Database error while storing posts: {str(e)}", exc_info=True)
-            return
-        
+
         except Exception as e:
             logger.error(f"Unexpected error while storing posts: {e}", exc_info=True)
             return
 
-
         logger.info("[PIPELINE] Step 2/2: Storing comments")
         try:
             self.storage.store_comments(reddit_data)
-            
-        except IntegrityError as e:
-            self.storage.session.rollback()
-            logger.error(f"Integrity error while storing comments: {e}",exc_info=True)
-            
-        except SQLAlchemyError as e:
-            self.storage.session.rollback()
-            logger.error(f"Database error while storing comments: {str(e)}", exc_info=True)
             
         except Exception as e:
             logger.error(f"Unexpected error while storing comments: {e}", exc_info=True)

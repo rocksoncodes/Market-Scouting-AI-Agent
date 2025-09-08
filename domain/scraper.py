@@ -8,13 +8,14 @@ class RedditScraper:
     def __init__(self):
         self.reddit = connect_to_reddit_singleton()
         
-        self.subreddits: List[str] = settings.DEFAULT_SUBREDDITS
-        self.post_limit: int = settings.DEFAULT_POST_LIMIT
-        self.comment_limit: int = settings.DEFAULT_COMMENT_LIMIT
+        self.subreddits = settings.DEFAULT_SUBREDDITS
+        self.post_limit = settings.DEFAULT_POST_LIMIT
+        self.comment_limit = settings.DEFAULT_COMMENT_LIMIT
         
-        self.posts: List[Dict[str, Any]] = []
-        self.submission_ids: List[str] = []
-        self.comments: List[Dict[str, Any]] = []
+        self.posts = []
+        self.submission_ids = []
+        self.comments = []
+
          
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
@@ -121,3 +122,4 @@ class RedditScraper:
         self.comments = comments_collected
         logger.info(f"Completed. Total comments collected: {len(comments_collected)}")
         return comments_collected
+

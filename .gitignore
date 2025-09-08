@@ -1,5 +1,6 @@
 .venv
 .vscode
+.idea
 .env
 Market-Scouting-AI-Agent.code-workspace
 __pycache__/

@@ -17,7 +17,7 @@ def run_scout_agent(query):
       response = agent.models.generate_content(
          model = "gemini-1.5-flash",
          contents = query,
-         config=provide_agent_tools(tools=[run_reddit_scraper, run_sentiment_pipeline])
+         config = provide_agent_tools(tools=[run_reddit_scraper, run_sentiment_pipeline])
       )
 
       logger.info("Market Scout Agent executed successfully..")

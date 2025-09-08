@@ -1,6 +1,5 @@
 from sqlalchemy.orm import sessionmaker
 from database.models import database_engine, Post, Comment
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from utils.storage_validator import ensure_data_integrity
 from utils.logger import logger
 
@@ -9,7 +8,7 @@ class RedditStorage:
     def __init__(self):
         self.SessionLocal = sessionmaker(bind=database_engine)
         
-    def store_posts(self, reddit_data: dict):
+    def store_posts(self, reddit_data):
         """
         Stores validated Reddit posts into the database.
         Returns a summary of how many were stored.
@@ -23,12 +22,12 @@ class RedditStorage:
             for post_data in reddit_data.get("posts", []):
                 if post_data["submission_id"] in validated_posts:
                     post = Post(
-                        submission_id=post_data["submission_id"],
-                        subreddit=post_data.get("subreddit", ""),
-                        title=post_data.get("title", ""),
-                        body=post_data.get("body", ""),
-                        upvote_ratio=post_data.get("upvote_ratio", 0.0),
-                        score=post_data.get("score", 0)
+                        submission_id = post_data["submission_id"],
+                        subreddit = post_data.get("subreddit", ""),
+                        title = post_data.get("title", ""),
+                        body = post_data.get("body", ""),
+                        upvote_ratio = post_data.get("upvote_ratio", 0.0),
+                        score = post_data.get("score", 0)
                     )
                     session.add(post)
                     stored_posts += 1
@@ -36,15 +35,6 @@ class RedditStorage:
             session.commit()
             logger.info(f"Stored {stored_posts} posts.")
             return {"posts_stored": stored_posts}
-        
-        except IntegrityError as e:
-            session.rollback()
-            logger.error(f"Integrity error while storing posts: {e}")
-            
-        except SQLAlchemyError as e:
-            session.rollback()
-            logger.error(f"Database error while storing posts: {str(e)}", exc_info=True)
-            return
 
         except Exception as e:
             session.rollback()
@@ -65,10 +55,10 @@ class RedditStorage:
         try:
             for comment_data in reddit_data.get("comments", []):
                 comment = Comment(
-                    submission_id=comment_data["submission_id"],
-                    author=comment_data.get("author", ""),
-                    body=comment_data.get("body", ""),
-                    score=comment_data.get("score", 0)
+                    submission_id = comment_data["submission_id"],
+                    author = comment_data.get("author", ""),
+                    body = comment_data.get("body", ""),
+                    score = comment_data.get("score", 0)
                 )
                 session.add(comment)
                 stored_comments += 1
@@ -76,15 +66,6 @@ class RedditStorage:
             session.commit()
             logger.info(f"Stored {stored_comments} comments.")
             return {"comments_stored": stored_comments}
-        
-        except IntegrityError as e:
-            session.rollback()
-            logger.error(f"Integrity error while storing comments: {e}")
-            
-        except SQLAlchemyError as e:
-            session.rollback()
-            logger.error(f"Database error while storing comments: {str(e)}", exc_info=True)
-            return
         
         except Exception as e:
             session.rollback()

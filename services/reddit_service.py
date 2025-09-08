@@ -1,4 +1,3 @@
-import os
 import praw
 from config import settings
 from dotenv import load_dotenv

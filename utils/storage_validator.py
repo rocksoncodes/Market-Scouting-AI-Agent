@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models import Post
 
-def ensure_data_integrity(session: Session, reddit_data: list) -> list:
+def ensure_data_integrity(session: Session, reddit_data) -> list:
     """
     Returns a list of submission_ids that do NOT exist in the database.
     """

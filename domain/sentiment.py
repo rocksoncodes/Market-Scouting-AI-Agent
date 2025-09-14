@@ -13,7 +13,7 @@ class RedditSentiment:
         Initialize sentiment analyzer and ensure required NLTK resources.
         """
         self.ensure_nltk_resources()
-        self.comments: List[Dict[str, str]] = []
+        self.comments = []
         self.sia = SentimentIntensityAnalyzer()
         
 

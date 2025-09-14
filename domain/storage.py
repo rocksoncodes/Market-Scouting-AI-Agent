@@ -56,6 +56,8 @@ class RedditStorage:
             for comment_data in reddit_data.get("comments", []):
                 comment = Comment(
                     submission_id = comment_data["submission_id"],
+                    title=comment_data.get("title", ""),
+                    subreddit=comment_data.get("subreddit", ""),
                     author = comment_data.get("author", ""),
                     body = comment_data.get("body", ""),
                     score = comment_data.get("score", 0)

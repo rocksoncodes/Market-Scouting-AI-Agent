@@ -16,7 +16,6 @@ class RedditScraper:
         self.submission_ids = []
         self.comments = []
 
-         
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
         """
@@ -107,6 +106,7 @@ class RedditScraper:
                     comment_data: Dict[str, Any] = {
                         "submission_id": submission.id,
                         "title": submission.title,
+                        "subreddit": submission.subreddit.display_name,
                         "author": str(comment.author) if comment.author else "Unknown",
                         "body": comment.body,
                         "score": comment.score
@@ -122,4 +122,3 @@ class RedditScraper:
         self.comments = comments_collected
         logger.info(f"Completed. Total comments collected: {len(comments_collected)}")
         return comments_collected
-

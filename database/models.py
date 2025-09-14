@@ -26,6 +26,8 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     submission_id = Column(String(20), ForeignKey("posts.submission_id"))
+    subreddit = Column(String(100), nullable=False)
+    title = Column(Text, nullable=False)
     author = Column(String(255))
     body = Column(Text)
     score = Column(Integer)

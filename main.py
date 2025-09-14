@@ -1,7 +1,8 @@
-from services.scraper_service import scrape_and_store
+from services.scraper_service import scrape_reddit_data, store_reddit_data
 
 def main():
-    scrape_and_store()
+    reddit_data = scrape_reddit_data()
+    store_reddit_data(reddit_data)
 
 if __name__ == "__main__":
     main()

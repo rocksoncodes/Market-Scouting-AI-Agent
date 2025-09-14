@@ -1,5 +1,5 @@
 from config import settings
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 
 DATABASE_URL = settings.DATABASE_URL
@@ -17,6 +17,7 @@ class Post(Base):
     body = Column(Text)
     upvote_ratio = Column(Float)
     score = Column(Integer)
+    is_processed = Column(Boolean, default=False)
 
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
 

@@ -2,8 +2,6 @@ from typing import List, Dict
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from collections import Counter
-
-from services.scraper_service import run_reddit_scraper
 from utils.logger import logger
 
 

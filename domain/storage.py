@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from database.models import database_engine, Post, Comment
-from utils.storage_validator import ensure_data_integrity
+from utils.integrity import ensure_data_integrity
 from utils.logger import logger
 
 

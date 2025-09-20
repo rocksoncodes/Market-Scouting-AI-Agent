@@ -1,21 +1,31 @@
-from typing import List, Dict
 import nltk
+from sqlalchemy.orm import sessionmaker
+from database.models import database_engine, Post
+from typing import Dict, List, Any
+from utils.query import serialize_post, get_comments_for_post
 from nltk.sentiment import SentimentIntensityAnalyzer
+from utils.query import get_session
 from collections import Counter
 from utils.logger import logger
 
+Session = sessionmaker(bind=database_engine)
 
-class RedditSentiment:
+class PostSentimentService:
     def __init__(self):
         """
         Initialize sentiment analyzer and ensure required NLTK resources.
         """
         self.ensure_nltk_resources()
-        self.comments = []
+        self.session = get_session()
         self.sia = SentimentIntensityAnalyzer()
-        
+        self.limit = 1
 
-    def ensure_nltk_resources(self) -> None:
+        self.query_results: List[Dict] = []
+        self.extracted_comments: List[Dict] = []
+        self.sentiment_result: List[Dict] = []
+        
+    @staticmethod
+    def ensure_nltk_resources() -> None:
         """
         Download required NLTK resources if missing.
         """
@@ -24,32 +34,92 @@ class RedditSentiment:
         except LookupError:
             logger.info("Downloading VADER lexicon...")
             nltk.download("vader_lexicon")
-            
 
-    def fetch_and_validate_comments(self) -> List[Dict[str, str]]:
+
+    def query_posts_with_comments(self) -> List[Dict]:
         """
-        Use RedditScraper to fetch posts and comments.
+        Query posts along with their comments.
+        Each comment is included only if its submission_id matches the post id.
         """
-        scraper = run_reddit_scraper()
-        comments = scraper.get("comments")
+        session = self.session
+        post_records = []
 
-        if not isinstance(comments, list):
-            raise TypeError("Expected a list of comment dictionaries.")
+        logger.info("Querying posts with comments from the database...")
 
-        self.comments = comments
-        return comments
+        try:
+            posts = session.query(Post).limit(self.limit).all()
+            total_comments = 0
+
+            for post in posts:
+                comment_records, comment_count = get_comments_for_post(session, post.submission_id)
+                total_comments += comment_count
+
+                logger.info(f"Post {post.id} retrieved with {comment_count} comments.")
+                post_records.append(serialize_post(post, comment_records))
+
+            logger.info(
+                f"Query complete. Retrieved {len(posts)} posts and {total_comments} comments in total."
+            )
+            self.query_results = post_records
+            return post_records
+
+        except Exception as e:
+            logger.error(f"Error querying posts with comments: {e}", exc_info=True)
+            self.query_results = []
+            return []
+
+        finally:
+            session.close()
+
+
+    def extract_comments(self) -> List[Dict[str, Any]]:
+        """
+        Extract raw comment data from the query results
+        """
+
+        logger.info("Extracting all comments from query results...")
+
+        if not self.query_results:
+            logger.info("No query results found, calling query_posts_with_comments()...")
+            self.query_posts_with_comments()
+
+        new_comments = []
+
+        try:
+            for data in self.query_results:
+                comments = data.get("comments", [])
+                for item in comments:
+                    body_comment = item.get("body", "")
+                    if body_comment:
+                        new_comments.append({
+                            "body": body_comment,
+                            "submission_id": item.get("submission_id"),
+                            "author": item.get("author")
+                        })
+
+            logger.info(f"Extracted {len(new_comments)} valid comments")
+            self.extracted_comments = new_comments
+            return new_comments
+
+        except Exception as e:
+            logger.error(f"Error extracting comments from query results: {e}", exc_info=True)
+            self.extracted_comments = []
+            return []
     
 
-    def analyze_sentiment(self) -> List[Dict[str, str]]:
+    def analyze_sentiment(self) -> List[Dict[str, Any]]:
         """
         Run sentiment analysis on comments and return results with labels.
         """
-        if not self.comments:
-            self.fetch_and_validate_comments()
 
-        sentiment_results: List[Dict[str, str]] = []
+        if not self.extracted_comments:
+            logger.info("No extracted comments found, calling extract_comments()...")
+            self.extract_comments()
 
-        for comment in self.comments:
+        sentiment_results: List[Dict[str, Any]] = []
+        logger.info(f"Starting sentiment analysis on {len(self.extracted_comments)} comments.")
+
+        for comment in self.extracted_comments:
             try:
                 text = comment.get("body", "")
                 if not isinstance(text, str) or not text.strip():
@@ -73,8 +143,10 @@ class RedditSentiment:
                 })
 
             except Exception as e:
-                logger.error(f"Error analyzing comment {comment}: {e}")
+                logger.error(f"Error analyzing comment {comment}: {e}", exc_info=True)
 
+        self.sentiment_result = sentiment_results
+        logger.info("Completed sentiment analysis. Valid results: %d", len(sentiment_results))
         return sentiment_results
     
 
@@ -82,7 +154,13 @@ class RedditSentiment:
         """
         Aggregate sentiment results for all loaded comments.
         """
-        sentiment_results = self.analyze_sentiment()
+        logger.info("Starting sentiment summarization...")
+
+        if not self.sentiment_result:
+            logger.info("No sentiment results found, calling analyze_sentiment()...")
+            sentiment_results = self.analyze_sentiment()
+        else:
+            sentiment_results = self.sentiment_result
 
         sentiment_labels = []
         compound_scores = []
@@ -121,4 +199,25 @@ class RedditSentiment:
             logger.error(f"Error summarizing post sentiment: {e}")
             summary = {}
 
-        return {"summary": summary}
+        return summary
+
+
+    def store_sentiment_results(self):
+        """
+        Insert sentiments results into the database
+        """
+        pass
+
+
+    def marked_comments_processed(self):
+        """
+        Update comments as processed
+        """
+        pass
+
+
+    def save_changes(self):
+        """
+        Commit all changes to the database
+        """
+        pass

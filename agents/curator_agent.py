@@ -1,6 +1,5 @@
 from services.gemini_service import initialize_gemini, provide_agent_tools
-from services.scraper_service import run_reddit_scraper
-from services.sentiment_service import run_sentiment_pipeline
+from services.sentiment_service import execute_sentiment_pipeline
 from google.genai import errors
 from utils.logger import logger
 
@@ -17,7 +16,7 @@ def run_scout_agent(query):
       response = agent.models.generate_content(
          model = "gemini-1.5-flash",
          contents = query,
-         config = provide_agent_tools(tools=[run_reddit_scraper, run_sentiment_pipeline])
+         config = provide_agent_tools(tools=[execute_sentiment_pipeline])
       )
 
       logger.info("Market Scout Agent executed successfully..")

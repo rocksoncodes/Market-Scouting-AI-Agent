@@ -1,5 +1,13 @@
 from typing import List, Dict, Tuple
-from database.models import Comment, Post
+from sqlalchemy.orm import sessionmaker
+from database.models import database_engine,Comment, Post
+
+
+def get_session():
+    session_make = sessionmaker(bind=database_engine)
+    session = session_make()
+    return session
+
 
 def serialize_comment(comment: Comment) -> Dict:
     return {
@@ -24,6 +32,7 @@ def get_comments_for_post(session, post_id: str) -> Tuple[List[Dict], int]:
     comments = (
         session.query(Comment)
         .filter(Comment.submission_id == post_id)
+        .limit(3)
         .all()
     )
 

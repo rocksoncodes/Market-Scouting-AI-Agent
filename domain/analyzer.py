@@ -1,8 +1,8 @@
 from sqlalchemy.orm import sessionmaker
-from database.models import database_engine, Post, Comment
+from database.models import database_engine, Post
 from domain.sentiment import RedditSentiment
 from typing import Dict, List
-from utils.queries import serialize_post, serialize_comment, get_comments_for_post
+from utils.query import serialize_post, get_comments_for_post
 from utils.logger import logger
 
 Session = sessionmaker(bind=database_engine)
@@ -13,16 +13,16 @@ class CommentAnalyzer:
         self.analyzer = RedditSentiment()
         self.limit = 1
 
-        self.query_results = None
-        self.extracted_comments = None
-        self.sentiment_result = None
+        self.query_results = []
+        self.extracted_comments = []
+        self.sentiment_result = []
 
     def query_posts_with_comments(self) -> List[Dict]:
         """
         Query posts along with their comments.
         Each comment is included only if its submission_id matches the post id.
         """
-        session = Session()
+        session = self.session
         post_records = []
 
         logger.info("Querying posts with comments from the database...")
@@ -41,22 +41,35 @@ class CommentAnalyzer:
             logger.info(
                 f"Query complete. Retrieved {len(posts)} posts and {total_comments} comments in total."
             )
+            self.query_results = post_records
             return post_records
 
         except Exception as e:
             logger.error(f"Error querying posts with comments: {e}", exc_info=True)
+            self.query_results = []
             return []
 
         finally:
             session.close()
 
 
-    def extract_comments(self):
+    def extract_comments(self) -> List[List[str]]:
         """
-        Extract unprocessed comments from the query results
+        Extract unprocessed comment bodies from the query results
         """
         if not self.query_results:
             self.query_posts_with_comments()
+
+        new_comments = []
+
+        for data in self.query_results:
+            comments = data.get("comments", [])
+            for item in comments:
+                body_comment = item.get("body", "")
+                new_comments.append([body_comment])
+
+        self.extracted_comments = new_comments
+        return new_comments
 
 
     def analyze_comments(self):

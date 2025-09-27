@@ -1,12 +1,12 @@
 from typing import Dict, List, Any
 from config import settings
 from utils.logger import logger
-from clients.reddit_client import connect_to_reddit_singleton
+from clients.reddit_client import get_reddit_client
 
 
 class ScraperService:
     def __init__(self):
-        self.reddit = connect_to_reddit_singleton()
+        self.reddit = get_reddit_client()
         
         self.subreddits = settings.DEFAULT_SUBREDDITS
         self.post_limit = settings.DEFAULT_POST_LIMIT
@@ -25,7 +25,7 @@ class ScraperService:
         """
         if not self.reddit:
             logger.warning("Reddit client not found. Reconnecting...")
-            self.reddit = connect_to_reddit_singleton()
+            self.reddit = get_reddit_client()
 
         posts: List[Dict[str, Any]] = []
 

@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple
 from sqlalchemy.orm import sessionmaker
-from database.models import database_engine,Comment, Post
+from database.engine import database_engine
+from database.models import Comment, Post
 
 
 def get_session():

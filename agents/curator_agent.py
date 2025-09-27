@@ -1,5 +1,5 @@
-from services.gemini_service import initialize_gemini, provide_agent_tools
-from services.sentiment_service import execute_sentiment_pipeline
+from clients.gemini_client import initialize_gemini, provide_agent_tools
+from pipelines.sentiment_pipeline import execute_sentiment_pipeline
 from google.genai import errors
 from utils.logger import logger
 

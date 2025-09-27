@@ -1,10 +1,11 @@
 from sqlalchemy.orm import sessionmaker
-from database.models import database_engine, Post, Comment
-from utils.integrity import ensure_data_integrity
+from database.models import Post, Comment
+from database.engine import database_engine
+from utils.integrity_helper import ensure_data_integrity
 from utils.logger import logger
 
 
-class RedditStorage:
+class StorageService:
     def __init__(self):
         self.SessionLocal = sessionmaker(bind=database_engine)
         

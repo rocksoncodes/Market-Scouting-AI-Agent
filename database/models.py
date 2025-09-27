@@ -1,11 +1,7 @@
-from config import settings
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey, Boolean
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
+from database.base import Base
 
-DATABASE_URL = settings.DATABASE_URL
-database_engine = create_engine(DATABASE_URL)
-
-Base = declarative_base()
 
 class Post(Base):
     __tablename__ = "posts"
@@ -34,6 +30,3 @@ class Comment(Base):
     score = Column(Integer)
 
     post = relationship("Post", back_populates="comments")
-
-
-Base.metadata.create_all(database_engine)

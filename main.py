@@ -1,6 +1,8 @@
-from services.scraper_service import scrape_reddit_data, store_reddit_data
+from database.init_db import init_db
+from handlers.reddit_handler import scrape_reddit_data, store_reddit_data
 
 def run_program():
+    init_db()
     reddit_data = scrape_reddit_data()
     store_reddit_data(reddit_data)
 

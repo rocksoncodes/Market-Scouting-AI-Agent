@@ -33,7 +33,7 @@ def get_comments_for_post(session, post_id: str) -> Tuple[List[Dict], int]:
     comments = (
         session.query(Comment)
         .filter(Comment.submission_id == post_id)
-        .limit(3)
+        .limit(50)
         .all()
     )
 

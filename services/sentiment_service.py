@@ -19,7 +19,7 @@ class SentimentService:
         self.ensure_nltk_resources()
         self.session = get_session()
         self.sia = SentimentIntensityAnalyzer()
-        self.limit = 1
+        self.limit = 1 # Limit number of posts to process
 
         self.query_results: List[Dict] = []
         self.extracted_comments: List[Dict] = []
@@ -98,7 +98,7 @@ class SentimentService:
                             "author": item.get("author")
                         })
 
-            logger.info(f"Extracted {len(new_comments)} valid comments")
+            logger.info(f"Extracted {len(new_comments)} valid comment(s)")
             self.extracted_comments = new_comments
             return new_comments
 
@@ -118,7 +118,7 @@ class SentimentService:
             self.extract_comments()
 
         sentiment_results: List[Dict[str, Any]] = []
-        logger.info(f"Starting sentiment analysis on {len(self.extracted_comments)} comments.")
+        logger.info(f"Starting sentiment analysis on {len(self.extracted_comments)} comment(s).")
 
         for comment in self.extracted_comments:
             try:
@@ -138,8 +138,6 @@ class SentimentService:
 
                 sentiment_results.append({
                     "submission_id": comment.get("submission_id"),
-                    "author": comment.get("author"),
-                    "text": text,
                     "sentiment": {"compound": score["compound"], "label": label}
                 })
 
@@ -147,7 +145,7 @@ class SentimentService:
                 logger.error(f"Error analyzing comment {comment}: {e}", exc_info=True)
 
         self.sentiment_result = sentiment_results
-        logger.info("Completed sentiment analysis. Valid results: %d", len(sentiment_results))
+        logger.info("Completed sentiment analysis. Valid result(s): %d", len(sentiment_results))
         return sentiment_results
     
 

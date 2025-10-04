@@ -22,6 +22,7 @@ def serialize_comment(comment: Comment) -> Dict:
 def serialize_post(post: Post, comments: List[Dict]) -> Dict:
     return {
         "post_number": post.id,
+        "post_key":post.submission_id,
         "subreddit": post.subreddit,
         "title": post.title,
         "body": post.body,

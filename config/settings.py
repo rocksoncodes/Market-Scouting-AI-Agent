@@ -15,7 +15,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-DEFAULT_SUBREDDITS: List[str] = ["entrepreneur", "startups"]
+DEFAULT_SUBREDDITS: List[str] = ["entrepreneur", "startups","freelance"]
 DEFAULT_POST_LIMIT: int = 50
 DEFAULT_COMMENT_LIMIT: int = 100
 

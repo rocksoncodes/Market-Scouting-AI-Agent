@@ -1,7 +1,7 @@
 import nltk
 from sqlalchemy.orm import sessionmaker
 from database.engine import database_engine
-from database.models import Post
+from database.models import Post, Sentiment
 from typing import Dict, List, Any
 from utils.query_helper import serialize_post, get_comments_for_post
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -61,6 +61,7 @@ class SentimentService:
             logger.info(
                 f"Query complete. Retrieved {len(posts)} posts and {total_comments} comments in total."
             )
+
             self.query_results = post_records
             return post_records
 
@@ -71,7 +72,6 @@ class SentimentService:
 
         finally:
             session.close()
-
 
     def extract_comments(self) -> List[Dict[str, Any]]:
         """
@@ -205,7 +205,32 @@ class SentimentService:
         """
         Insert sentiments results into the database
         """
-        pass
+        session = self.session
+        posts = self.query_results
+        post_summary = self.summarize_post_sentiment()
+
+        if not posts:
+            self.query_posts_with_comments()
+            posts = self.query_results
+
+        if not posts:
+            logger.warning("No posts available to store sentiments.")
+            return
+
+        post_key = posts[0].get("post_id")
+
+        try:
+            results = Sentiment(
+                post_id = post_key,
+                sentiment_results = post_summary
+            )
+            session.add(results)
+            session.commit()
+
+        except Exception as e:
+            logger.error(f"Error storing post sentiment(s) {e}", exc_info=True)
+            session.rollback()
+
 
 
     def marked_comments_processed(self):

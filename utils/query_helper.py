@@ -13,6 +13,7 @@ def get_session():
 def serialize_comment(comment: Comment) -> Dict:
     return {
         "comment_id": comment.id,
+        "post_key": comment.submission_id,
         "body": comment.body,
         "author": comment.author,
         "score": comment.score,

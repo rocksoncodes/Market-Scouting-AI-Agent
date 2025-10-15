@@ -2,7 +2,7 @@ import nltk
 from sqlalchemy.orm import sessionmaker
 from database.engine import database_engine
 from database.models import Post, Sentiment
-from typing import Dict, List, Any
+from typing import Dict, List
 from utils.query_helper import serialize_post, get_comments_for_post
 from nltk.sentiment import SentimentIntensityAnalyzer
 from utils.query_helper import get_session
@@ -10,6 +10,7 @@ from collections import Counter
 from utils.logger import logger
 
 Session = sessionmaker(bind=database_engine)
+
 
 class SentimentService:
     def __init__(self):
@@ -19,12 +20,11 @@ class SentimentService:
         self.ensure_nltk_resources()
         self.session = get_session()
         self.sia = SentimentIntensityAnalyzer()
-        self.limit = 1 # Limit number of posts to process
 
         self.query_results: List[Dict] = []
-        self.extracted_comments: List[Dict] = []
-        self.sentiment_result: List[Dict] = []
-        
+        self.post_sentiment_scores: List[List[Dict]] = []
+        self.post_sentiment_summaries: List[List[Dict]] = []
+
     @staticmethod
     def ensure_nltk_resources() -> None:
         """
@@ -48,7 +48,7 @@ class SentimentService:
         logger.info("Querying posts with comments from the database...")
 
         try:
-            posts = session.query(Post).limit(self.limit).all()
+            posts = session.query(Post).all()
             total_comments = 0
 
             for post in posts:
@@ -73,175 +73,145 @@ class SentimentService:
         finally:
             session.close()
 
-    def extract_comments(self) -> List[Dict[str, Any]]:
-        """
-        Extract raw comment data from the query results
-        """
 
-        logger.info("Extracting all comments from query results...")
-
-        if not self.query_results:
-            logger.info("No query results found, calling query_posts_with_comments()...")
-            self.query_posts_with_comments()
-
-        new_comments = []
-
-        try:
-            for data in self.query_results:
-                comments = data.get("comments", [])
-                for item in comments:
-                    body_comment = item.get("body", "")
-                    if body_comment:
-                        new_comments.append({
-                            "body": body_comment,
-                            "submission_id": item.get("submission_id"),
-                            "author": item.get("author")
-                        })
-
-            logger.info(f"Extracted {len(new_comments)} valid comment(s)")
-            self.extracted_comments = new_comments
-            return new_comments
-
-        except Exception as e:
-            logger.error(f"Error extracting comments from query results: {e}", exc_info=True)
-            self.extracted_comments = []
-            return []
-    
-
-    def analyze_sentiment(self) -> List[Dict[str, Any]]:
+    def analyze_post_sentiment(self):
         """
         Run sentiment analysis on comments and return results with labels.
         """
 
-        if not self.extracted_comments:
-            logger.info("No extracted comments found, calling extract_comments()...")
-            self.extract_comments()
+        post_sentiment_scores = []
 
-        sentiment_results: List[Dict[str, Any]] = []
-        logger.info(f"Starting sentiment analysis on {len(self.extracted_comments)} comment(s).")
+        if not self.query_results:
+            logger.info("No extracted post with comments where found, calling query_posts_with_comments()...")
+            self.query_posts_with_comments()
 
-        for comment in self.extracted_comments:
-            try:
-                text = comment.get("body", "")
-                if not isinstance(text, str) or not text.strip():
-                    logger.warning(f"Skipping invalid or empty comment: {comment}")
-                    continue
+        logger.info(f"Starting sentiment analysis on {len(self.query_results)} post(s).")
 
-                score = self.sia.polarity_scores(text)
+        try:
+            for posts in self.query_results:
+                comments = posts.get("comments", [])
+                comment_sentiment_scores = []
 
-                if score["compound"] > 0.05:
-                    label = "Positive"
-                elif score["compound"] < -0.05:
-                    label = "Negative"
-                else:
-                    label = "Neutral"
+                for comment in comments:
+                    comment_text = comment.get("body", "")
+                    post_key = posts.get("post_key", "")
+                    score = self.sia.polarity_scores(comment_text)
 
-                sentiment_results.append({
-                    "submission_id": comment.get("submission_id"),
-                    "sentiment": {"compound": score["compound"], "label": label}
-                })
+                    if score["compound"] > 0.05:
+                        label = "Positive"
+                    elif score["compound"] < -0.05:
+                        label = "Negative"
+                    else:
+                        label = "Neutral"
 
-            except Exception as e:
-                logger.error(f"Error analyzing comment {comment}: {e}", exc_info=True)
+                    comment_sentiment_scores.append(
+                        {"post_key":post_key, "compound": score["compound"], "label": label}
+                    )
+                post_sentiment_scores.append(comment_sentiment_scores)
 
-        self.sentiment_result = sentiment_results
-        logger.info("Completed sentiment analysis. Valid result(s): %d", len(sentiment_results))
-        return sentiment_results
-    
+        except Exception as e:
+            logger.error(f"Error during sentiment analysis: {e}", exc_info=True)
+            return []
 
-    def summarize_post_sentiment(self) -> Dict:
+        self.post_sentiment_scores = post_sentiment_scores
+        logger.info("Sentiment analysis complete.")
+        return post_sentiment_scores
+
+
+    def summarize_post_sentiment(self) -> List[Dict]:
         """
         Aggregate sentiment results for all loaded comments.
         """
         logger.info("Starting sentiment summarization...")
-
-        if not self.sentiment_result:
-            logger.info("No sentiment results found, calling analyze_sentiment()...")
-            sentiment_results = self.analyze_sentiment()
-        else:
-            sentiment_results = self.sentiment_result
-
-        sentiment_labels = []
-        compound_scores = []
-
+        
+        if not self.post_sentiment_scores:
+            logger.info("No sentiment scores where found, calling analyze_post_sentiment()...")
+            self.analyze_post_sentiment()
+        
+        summaries = []
+        
         try:
-            for result in sentiment_results:
-                sentiment = result.get("sentiment", {})
-                if "label" in sentiment and "compound" in sentiment:
-                    sentiment_labels.append(sentiment["label"])
-                    compound_scores.append(sentiment["compound"])
-
-            label_counts = Counter()
-            for label in sentiment_labels:
-                label_counts[label] += 1
-
-            if compound_scores:
-                average_compound = sum(compound_scores) / len(compound_scores)
-            else:
-                average_compound = 0.0
-
-            if label_counts:
-                dominant_sentiment = label_counts.most_common(1)[0][0]
-            else:
-                dominant_sentiment = "Neutral"
-
-            summary = {
-                "dominant_sentiment": dominant_sentiment,
-                "avg_compound": average_compound,
-                "counts": dict(label_counts),
-                "total_comments": len(sentiment_results),
-            }
-
-            logger.info("Post sentiment summary: %s", summary)
-
+            for post_comment in self.post_sentiment_scores:
+                
+                if not post_comment:
+                    continue
+                
+                sentiment_labels = []
+                compound_scores = []
+                post_key = None
+                
+                for comments in post_comment:
+                    if "label" in comments and "compound" in comments:
+                        sentiment_labels.append(comments["label"])
+                        compound_scores.append(comments["compound"])
+                        if not post_key and "post_key" in comments:
+                            post_key = comments["post_key"]
+                        
+                label_counts = Counter(sentiment_labels)
+                    
+                if label_counts:
+                    dominant_sentiment = label_counts.most_common(1)[0][0]
+                else:
+                    dominant_sentiment = "Neutral"
+                    
+                if compound_scores:
+                    average_compound = sum(compound_scores) / len(compound_scores)
+                else:
+                    average_compound = 0.0
+                    
+                summary = {
+                    "post_key": post_key,
+                    "sentiment_summary":{
+                    "dominant_sentiment": dominant_sentiment,
+                    "avg_compound": average_compound,
+                    "counts": dict(label_counts),
+                    "total_comments": len(post_comment)}
+                }
+                summaries.append(summary)
+            
         except Exception as e:
-            logger.error(f"Error summarizing post sentiment: {e}")
-            summary = {}
+            logger.error(f"Error summarizing post sentiment: {e}", exc_info=True)
+            summaries = None
 
-        return summary
-
+        logger.info("Sentiment Summarization Complete.")
+        
+        self.post_sentiment_summaries = summaries
+        return summaries      
+            
 
     def store_sentiment_results(self):
         """
-        Insert sentiments results into the database
+        Store sentiment results into the database
         """
+        
         session = self.session
-        posts = self.query_results
-        post_summary = self.summarize_post_sentiment()
-
-        if not posts:
-            self.query_posts_with_comments()
-            posts = self.query_results
-
-        if not posts:
-            logger.warning("No posts available to store sentiments.")
+        sentiments = self.post_sentiment_summaries
+        
+        if not sentiments:
+            self.summarize_post_sentiment()
+            sentiments = self.post_sentiment_summaries
+            
+        if not sentiments:
+            logger.warning("No sentiment data to store.")
             return
-
-        post_key = posts[0].get("post_id")
-
+        
         try:
-            results = Sentiment(
-                post_id = post_key,
-                sentiment_results = post_summary
-            )
-            session.add(results)
+            logger.info("Storing post(s) sentiments in the database...")
+            
+            for post_sentiment_summary in sentiments:
+                post_key = post_sentiment_summary.get("post_key")
+                post_sentiment = post_sentiment_summary.get("sentiment_summary")
+                
+                results = Sentiment(
+                    post_id = post_key,
+                    sentiment_results = post_sentiment
+                )
+                
+                session.add(results)
             session.commit()
-
+                
+            logger.info("Sentiment Storage Complete.")
+                
         except Exception as e:
             logger.error(f"Error storing post sentiment(s) {e}", exc_info=True)
             session.rollback()
-
-
-
-    def marked_comments_processed(self):
-        """
-        Update comments as processed
-        """
-        pass
-
-
-    def save_changes(self):
-        """
-        Commit all changes to the database
-        """
-        pass

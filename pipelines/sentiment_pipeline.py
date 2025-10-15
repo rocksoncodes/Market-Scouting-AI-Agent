@@ -9,11 +9,10 @@ def execute_sentiment_pipeline():
     """
     try:
         logger.info("===Starting sentiment pipeline ===")
-        
+
         processor = SentimentService()
         processor.query_posts_with_comments()
-        processor.extract_comments()
-        processor.analyze_sentiment()
+        processor.analyze_post_sentiment()
         processor.summarize_post_sentiment()
         processor.store_sentiment_results()
 

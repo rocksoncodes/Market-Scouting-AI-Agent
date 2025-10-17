@@ -28,7 +28,9 @@ class StorageService:
                         title = post_data.get("title", ""),
                         body = post_data.get("body", ""),
                         upvote_ratio = post_data.get("upvote_ratio", 0.0),
-                        score = post_data.get("score", 0)
+                        score = post_data.get("score", 0),
+                        number_of_comments = post_data.get("number_of_comments", 0),
+                        post_url = post_data.get("post_url","")
                     )
                     session.add(post)
                     stored_posts += 1

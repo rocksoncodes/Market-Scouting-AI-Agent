@@ -55,7 +55,6 @@ class SentimentService:
                 comment_records, comment_count = get_comments_for_post(session, post.submission_id)
                 total_comments += comment_count
 
-                logger.info(f"Post {post.id} retrieved with {comment_count} comments.")
                 post_records.append(serialize_post(post, comment_records))
 
             logger.info(
@@ -164,8 +163,7 @@ class SentimentService:
                     "sentiment_summary":{
                     "dominant_sentiment": dominant_sentiment,
                     "avg_compound": average_compound,
-                    "counts": dict(label_counts),
-                    "total_comments": len(post_comment)}
+                    "counts": dict(label_counts)}
                 }
                 summaries.append(summary)
             

@@ -13,6 +13,8 @@ class Post(Base):
     body = Column(Text)
     upvote_ratio = Column(Float)
     score = Column(Integer)
+    number_of_comments = Column(Integer)
+    post_url = Column(Text)
     is_processed = Column(Boolean, default=False)
 
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")

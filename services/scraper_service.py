@@ -11,6 +11,9 @@ class ScraperService:
         self.subreddits = settings.DEFAULT_SUBREDDITS
         self.post_limit = settings.DEFAULT_POST_LIMIT
         self.comment_limit = settings.DEFAULT_COMMENT_LIMIT
+        self.min_comments =  settings.MIN_COMMENTS
+        self.min_score = settings.MIN_SCORE
+        self.min_upvote_ratio = settings.MIN_UPVOTE_RATIO
         
         self.posts = []
         self.submission_ids = []
@@ -36,15 +39,23 @@ class ScraperService:
                 logger.info(f"Retrieved {len(subreddit_posts)} posts from r/{subreddit_name}.")
 
                 for submission in subreddit_posts:
-                    post_data: Dict[str, Any] = {
-                        "subreddit": subreddit_name,
-                        "submission_id": submission.id,
-                        "title": submission.title,
-                        "body": submission.selftext,
-                        "upvote_ratio": submission.upvote_ratio,
-                        "score": submission.score
-                    }
-                    posts.append(post_data)
+                    if (
+                        submission.upvote_ratio >= self.min_upvote_ratio
+                        and submission.score >= self.min_score
+                        and submission.num_comments >= self.min_comments
+                        and not submission.stickied
+                    ):
+                        post_data: Dict[str, Any] = {
+                            "subreddit": subreddit_name,
+                            "submission_id": submission.id,
+                            "title": submission.title,
+                            "body": submission.selftext,
+                            "upvote_ratio": submission.upvote_ratio,
+                            "score": submission.score,
+                            "number_of_comments": submission.num_comments,
+                            "post_url": submission.url
+                        }
+                        posts.append(post_data)
 
             except Exception as e:
                 logger.error(f"Error fetching posts from r/{subreddit_name}: {e}", exc_info=True)
@@ -62,7 +73,7 @@ class ScraperService:
         """
         if not self.posts:
             logger.warning("No posts available. Run fetch_reddit_posts() first.")
-            return []
+            self.fetch_reddit_posts()
 
         submission_ids: List[str] = []
 
@@ -83,8 +94,8 @@ class ScraperService:
             List of comment dictionaries.
         """
         if not self.submission_ids:
-            logger.warning("No submission IDs available. Run fetch_post_ids() first.")
-            return []
+            logger.warning("No submission IDs available. Running fetch_post_ids().")
+            self.fetch_post_ids()
 
         comments_collected: List[Dict[str, Any]] = []
         logger.info(f"Fetching comments from {len(self.submission_ids)} submissions...")
@@ -98,7 +109,6 @@ class ScraperService:
                 if self.comment_limit:
                     comments = comments[:self.comment_limit]
 
-                count = 0
                 for comment in comments:
                     if not comment.body or comment.body in ("[deleted]", "[removed]"):
                         continue
@@ -112,9 +122,6 @@ class ScraperService:
                         "score": comment.score
                     }
                     comments_collected.append(comment_data)
-                    count += 1
-
-                logger.info(f"Collected {count} comments from post '{submission.title[:30]}...'")
 
             except Exception as e:
                 logger.error(f"Error fetching comments for submission {submission_id}: {e}", exc_info=True)

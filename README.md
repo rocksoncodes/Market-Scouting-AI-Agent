@@ -32,8 +32,9 @@ Gemini API key (Google LLM)
 
 1. Clone the repository
 
-    ```bash git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
-    cd Market-Scouting-AI-Agent```
+    ```bash
+    git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
+   ```
 
 2. Create a virtual environment and install dependencies
 

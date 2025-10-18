@@ -1,4 +1,4 @@
-# Market Scout — The AI Agent That Finds Market Problems for You
+# Market Scout: The AI Agent That Finds Market Problems for You
 
 A lightweight AI agent that automates early-stage market research by scanning Reddit for real user pain points, validating them with a large language model, and preparing findings for downstream storage (Notion, database, etc.). Intended for entrepreneurs and developers who want to discover validated problems worth building solutions for.
 

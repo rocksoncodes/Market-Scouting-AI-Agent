@@ -1,107 +1,108 @@
-# Market Scout – The AI Agent That Finds Market Problems for You
-#### For `Entrepreneurs & Developers` </br>
+# Market Scout — The AI Agent That Finds Market Problems for You
 
-If you’ve ever spent hours scrolling through forums, hoping to find a real problem worth solving you know how exhausting it feels.
+A lightweight AI agent that automates early-stage market research by scanning Reddit for real user pain points, validating them with a large language model, and preparing findings for downstream storage (Notion, database, etc.). Intended for entrepreneurs and developers who want to discover validated problems worth building solutions for.
 
-That’s why I built Market Scout: an AI-powered agent that does the research for you. It scans Reddit communities, finds pain points people are actually talking about and uses Gemini AI to validate whether those problems are worth your time.
+---
 
-Instead of wasting hours on research, you can focus on what you do best: building solutions people love.
+## Key ideas
 
+- Automatically collect posts and comments from configured subreddits.
+- Use an LLM (Gemini) to validate whether a discovered issue represents a meaningful market problem.
+- Produce structured outputs that can be saved to Notion or a database for later review.
 
+---
 
-## 1. How Market Scout Works (Overview)
+## Current Features (implemented)
 
-Imagine this:</br>
+- OAuth-based Reddit integration for data ingestion
+- Basic Gemini AI integration (validation prompts)
+- Modular code structure with agents, services and pipelines
+- Sentiment analysis and text processing helpers
+- Structured logging
 
-You push your code to GitHub → Market Scout runs automatically → Within minutes, your Notion updates with 10 real-world validated problems.</br>
+Planned features are tracked in the roadmap and will be added over time.
 
-That’s hours of manual research done while you work on something else or even sleep.</br>
+---
 
-This repository contains the initial project setup; more updates and implementations will be added throughout development.
+## Quick start
 
-## 2. Current Features
-
-- Reddit Integration: OAuth-based Reddit API connection
-- AI-Powered Analysis: Gemini API integration for problem validation
-- Structured Logging: Comprehensive logging system
-- Modular Architecture: 
-  - agents/: AI agent logic and coordination
-  - services/: Core business logic and API integrations
-  - utils/: Shared utilities and helper functions
-
-## 3. Quick Start
+Prerequisites
+- Python 3.11+ (tested with 3.13)
+- A Reddit app (client ID & secret)
+- Gemini API key (Google LLM)
 
 1. Clone the repository
-```bash
-git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
-```
 
-2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
+    git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
+    cd Market-Scouting-AI-Agent
 
-3. Set environment variables
-```bash
-cp .env.example .env
-```
+2. Create a virtual environment and install dependencies
 
-4. Configure your .env file with:
-```bash
-REDDIT_CLIENT_ID       # Your Reddit API client ID
-REDDIT_CLIENT_SECRET   # Your Reddit API secret key
-REDDIT_USER_AGENT     # Your Reddit API user agent
-GEMINI_API_KEY        # Your Google Gemini API key
-```
+    python -m venv .venv
+    .\.venv\Scripts\activate    # Windows
+    pip install -r requirements.txt
 
-5. Run the scout agent
-```bash
-python main.py
-```
+3. Copy and edit environment variables
 
-## 4. Configuration
+    cp .env.example .env
 
-Edit the .env file with your:
-```bash
-REDDIT_CLIENT_ID       # Reddit API client ID
-REDDIT_CLIENT_SECRET   # Reddit API secret
-REDDIT_USER_AGENT      # Reddit API user agent
-NOTION_API_KEY         # Notion integration key
-NOTION_DB_ID           # Notion database ID
-GEMINI_API_KEY         # Gemini LLM API key
+Open `.env` and set the required keys (see Configuration below).
 
-(These will be used as features are implemented.)
-```
+4. Run the ingest agent (example)
 
-## 5. Current Capabilities
+    python engines\reddit_ingest.py
 
-- Reddit Post Data Collection: Fetches relevant posts from configured subreddits
-- Reddit Comment Data Collection: Fetches relevant comments from configured subreddit posts
-- Reddit Data Processing: Processes relevant reddit posts and comments using Python's nltk library.
-- Problem Validation: Uses Gemini AI to evaluate problem validity
+Depending on the agent/engine you want to run, use the corresponding script under `engines/`.
 
-## 6. Development Status
+---
 
-Current branch: `MSAA-001-Reddit-Scrapper-Implementation`
-- ✅ Basic project structure
-- ✅ Reddit API integration
-- ✅ Gemini AI integration
-- ✅ Reddit data collection
-- 🔄 Reddit data processing
-- 📝 Market sentiment analysis
-- 📝 Problem validation system
-- 📝 Reddit data storage 
+## Configuration (.env)
 
-## 7. Contributing
+The following environment variables are used by the project (add any others required by your integrations):
 
-Pull requests are welcome! You can help by:
+- REDDIT_CLIENT_ID       # Reddit API client ID
+- REDDIT_CLIENT_SECRET   # Reddit API secret
+- REDDIT_USER_AGENT      # Reddit API user agent string
+- GEMINI_API_KEY         # Gemini / Google LLM API key
+- NOTION_API_KEY         # (optional) Notion integration key
+- NOTION_DB_ID           # (optional) Notion database id
 
-- Implementing features from the planned roadmap
+Notes:
+- Keep secrets out of version control. Use a secrets manager for production.
 
-- Improving project structure and readability
+---
 
-- Adding documentation or examples
+## Project structure (overview)
 
-## 8. License
+- agents/         — orchestration logic for AI agents
+- clients/        — thin API clients (Reddit, Gemini)
+- engines/        — runnable scripts / entrypoints (reddit_ingest, curator)
+- services/       — business logic and integrations (scrapers, storage)
+- pipelines/      — data processing pipelines (sentiment, curator)
+- database/       — SQLAlchemy models and DB initialization
+- utils/          — shared helpers
 
-MIT License – free to use, adapt and share.
+---
+
+## Development status
+
+Branch: MSAA-05-Curator-Agent-Development
+
+- ✅ Project skeleton and core modules
+- ✅ Reddit ingestion and basic data collection
+- ✅ Gemini integration for evaluation
+- 🔄 Ongoing: Problem processing and storage
+- 📝 Planned: Notion sync, richer problem-ranking, Email notifications
+
+---
+
+## Contributing
+
+Contributions and PRs are welcome. Suggested ways to help:
+- Implement planned features from the roadmap
+- Improve data processing and validation prompts
+- Add tests and CI
+- Improve documentation and examples
+
+When opening a PR, include tests or a short demo showing the change.
+

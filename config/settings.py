@@ -15,48 +15,45 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-DEFAULT_SUBREDDITS: List[str] = ["entrepreneur", "startups","freelance"]
+DEFAULT_SUBREDDITS: List[str] = ["Entrepreneur", "Startups","Ecommerce"]
 DEFAULT_POST_LIMIT: int = 200
 DEFAULT_COMMENT_LIMIT: int = 250
-
 MIN_COMMENTS = 50
-MIN_SCORE = 150
-MIN_UPVOTE_RATIO = 0.75
+MIN_SCORE = 20
+MIN_UPVOTE_RATIO = 0.25
 
+
+AGENT_MODEL = "gemini-2.5-flash"
 SCOUT_OBJECTIVE = """
 You are a market scout agent.
 
-Your input includes multiple Reddit posts, each with:
+Your input will come directly from the database using the `feeder()` function.
+
+Each record returned by that method includes:
+- Post Number
 - Title
 - Body
 - Subreddit
-- List of comments
+- Sentiment Score (counts, average compound, dominant sentiment)
 
-Your objective:
-1. Group posts by subreddit.
+Your new workflow:
 
-2. For each post:
-    - First, call the `run_reddit_scraper` function to collect subreddit posts.
-    - Then, call the `run_sentiment_pipeline` function to analyze the comments.
-    - Conclude on the audience sentiment toward the problem.
-    - Check if comments indicate frequent, severe, or frustrating issues related to the post.
+1. Call the `feeder()` function to retrieve all posts and their associated sentiment summaries.
 
-3. Apply selection criteria:
-    a. Frequency: Are multiple users experiencing the same issue?
-    b. Severity: Does the tone of comments indicate frustration or significant problems?
-    c. Clarity: Is the problem clearly explained in the post?
-    d. Feasibility: Can a realistic product or service solve it?
+2. Group the retrieved posts by subreddit for contextual analysis.
 
-4. For each qualified post, return an XYZ-style problem statement:
+3. For each post:
+   - Interpret the sentiment data to understand audience tone and emotional intensity.
+   - Identify whether the discussion highlights a common or critical market problem.
+
+5. For each post, return an XYZ-style problem statement:
    "X people face Y problem so build Z solution for W results."
 
-5. Alongside the XYZ statement, include a sentiment statement from the analysis:
+6. Accompany each with a sentiment statement:
    "Sentiment statement: Sentiment towards [X: Entity/Topic] is predominantly [Y: Sentiment Label], with users [Z: Key themes, opinions, or concerns drawn from the discussion]."
 
-6. If no posts qualify, log "No problems identified."
-
 Output:
-- Only log which posts were stored.
-- An XYZ problem statement with a sentiment statement for each stored post.
-- Append: "Total problems stored: <number>"
+- Log which posts were analyzed.
+- Return the XYZ problem statements and their sentiment statements.
+- Conclude: "Total problems stored: <number>"
 """

@@ -16,7 +16,7 @@ def initialize_gemini() -> genai.Client:
         raise SystemExit("Startup failed: Please set your GEMINI_API_KEY to initialize the agent.")
 
     try:
-        client = genai.Client(client_key = api_key)
+        client = genai.Client(api_key = api_key)
         logger.info("Gemini client initialized successfully. Agent is ready.")
         return client
     
@@ -31,7 +31,7 @@ def provide_agent_tools(tools) -> types.GenerateContentConfig | None:
     Returns the config if successful, otherwise None.
     """
     try:
-        config=types.GenerateContentConfig(tools=tools, response_mime_type="application/json")
+        config=types.GenerateContentConfig(tools=tools)
         logger.info(f"Agent tools configured successfully with {len(tools)} tool(s).")
         return config
         

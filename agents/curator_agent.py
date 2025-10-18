@@ -1,31 +1,30 @@
 from clients.gemini_client import initialize_gemini, provide_agent_tools
-from pipelines.sentiment_pipeline import execute_sentiment_pipeline
+from pipelines.curator_pipeline import feeder
+from config import settings
 from google.genai import errors
 from utils.logger import logger
 
-
 agent = initialize_gemini()
 
-
-def run_scout_agent(query):
+def run_curator_agent():
    """
-   Runs the Market Scout Agent with a given query.
+   Runs the Curator Agent with a given query.
    Uses Gemini to generate content and apply agent tools.
    """
    try:
       response = agent.models.generate_content(
-         model = "gemini-1.5-flash",
-         contents = query,
-         config = provide_agent_tools(tools=[execute_sentiment_pipeline])
+         model = settings.AGENT_MODEL,
+         contents = settings.SCOUT_OBJECTIVE,
+         config = provide_agent_tools(tools=[feeder])
       )
 
-      logger.info("Market Scout Agent executed successfully..")
+      logger.info("Curator Agent executed successfully..")
       print(response.text)
-      
+
    except errors.ServerError as e:
       logger.error(f"Gemini server error: {e}")
       return {"error": "Model temporarily unavailable. Please try again later."}
-   
+
    except errors.ClientError as e:
     if "RESOURCE_EXHAUSTED" in str(e):
         logger.error("Quota exceeded. Try again after reset or switch models.")

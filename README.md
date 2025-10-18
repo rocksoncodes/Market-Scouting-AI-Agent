@@ -2,13 +2,13 @@
 
 A lightweight AI agent that automates early-stage market research by scanning Reddit for real user pain points, validating them with a large language model, and preparing findings for downstream storage (Notion, database, etc.). Intended for entrepreneurs and developers who want to discover validated problems worth building solutions for.
 
-## Key ideas
+# Key ideas
 
 - Automatically collect posts and comments from configured subreddits.
 - Use an LLM (Gemini) to validate whether a discovered issue represents a meaningful market problem.
 - Produce structured outputs that can be saved to Notion or a database for later review.
 
-## Current Features (implemented)
+# Current Features (implemented)
 
 - OAuth-based Reddit integration for data ingestion
 - Basic Gemini AI integration (validation prompts)
@@ -21,45 +21,47 @@ A lightweight AI agent that automates early-stage market research by scanning Re
 Planned features are tracked in the roadmap and will be added over time.
 
 
-## Quick start
+# Quick start
 
-Prerequisites
+### Prerequisites
 ```bash
 Python 3.11+ (tested with 3.13)
 A Reddit app (client ID & secret)
 Gemini API key (Google LLM)
 ```
 
-1. Clone the repository
+### 1. Clone the repository
 
-    ```bash
+```bash
     git clone https://github.com/[your-username]/Market-Scouting-AI-Agent.git
    ```
 
-2. Create a virtual environment and install dependencies
+### 2. Create a virtual environment and install dependencies
 
-    ```python -m venv .venv
+```bash
+    python -m venv .venv
     .\.venv\Scripts\activate    # Windows
-    pip install -r requirements.txt```
+    pip install -r requirements.txt
+```
 
-3. Copy and edit environment variables
+### 3. Copy and edit environment variables
 
-    ```bash
+```bash
    cp .env.example .env
-    ```
+```
 
 Open `.env` and set the required keys (see Configuration below).
 
-4. Run the ingest agent (example)
+### 4. Run the ingest agent (example)
 
     ```bash
-   python engines\reddit_ingest.py
+       python engines\reddit_ingest.py
     ```
 
 Depending on the agent/engine you want to run, use the corresponding script under `engines/`.
 
 
-## Configuration (.env)
+# Configuration (.env)
 
 The following environment variables are used by the project (add any others required by your integrations):
 
@@ -77,17 +79,17 @@ Notes:
 Keep secrets out of version control. Use a secrets manager for production.
 ```
 
-## Project structure (overview)
+# Project structure (overview)
 
-- agents/         — orchestration logic for AI agents
-- clients/        — thin API clients (Reddit, Gemini)
-- engines/        — runnable scripts / entrypoints (reddit_ingest, curator)
-- services/       — business logic and integrations (scrapers, storage)
-- pipelines/      — data processing pipelines (sentiment, curator)
-- database/       — SQLAlchemy models and DB initialization
-- utils/          — shared helpers
+- agents/         orchestration logic for AI agents
+- clients/        thin API clients (Reddit, Gemini)
+- engines/        runnable scripts / entrypoints (reddit_ingest, curator)
+- services/       business logic and integrations (scrapers, storage)
+- pipelines/      data processing pipelines (sentiment, curator)
+- database/       SQLAlchemy models and DB initialization
+- utils/          shared helpers
 
-## Development status
+# Development status
 
 Branch: MSAA-05-Curator-Agent-Development
 
@@ -98,7 +100,7 @@ Branch: MSAA-05-Curator-Agent-Development
 - 📝 Planned: Notion sync, richer problem-ranking, Email notifications
 
 
-## Contributing
+# Contributing
 
 Contributions and PRs are welcome. Suggested ways to help:
 - Implement planned features from the roadmap

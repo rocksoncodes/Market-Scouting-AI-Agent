@@ -54,9 +54,9 @@ Open `.env` and set the required keys (see Configuration below).
 
 ### 4. Run the ingest agent (example)
 
-    ```bash
-       python engines\reddit_ingest.py
-    ```
+```bash
+python engines\reddit_ingest.py
+```
 
 Depending on the agent/engine you want to run, use the corresponding script under `engines/`.
 

@@ -81,7 +81,6 @@ Keep secrets out of version control. Use a secrets manager for production.
 
 # Project structure (overview)
 
-- agents/         orchestration logic for AI agents
 - clients/        thin API clients (Reddit, Gemini)
 - engines/        runnable scripts / entrypoints (reddit_ingest, curator)
 - services/       business logic and integrations (scrapers, storage)

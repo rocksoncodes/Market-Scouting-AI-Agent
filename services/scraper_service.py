@@ -21,11 +21,7 @@ class ScraperService:
 
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
-        """
-        Fetch Reddit posts from default subreddits.
-        Returns:
-            List of post dictionaries.
-        """
+
         if not self.reddit:
             logger.warning("Reddit client not found. Reconnecting...")
             self.reddit = get_reddit_client()
@@ -66,11 +62,7 @@ class ScraperService:
     
 
     def fetch_post_ids(self) -> List[str]:
-        """
-        Extracts submission IDs from stored posts.
-        Returns:
-            List of submission IDs.
-        """
+
         if not self.posts:
             logger.warning("No posts available. Run fetch_reddit_posts() first.")
             self.fetch_reddit_posts()

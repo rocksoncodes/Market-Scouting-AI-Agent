@@ -3,10 +3,6 @@ from utils.logger import logger
 
 
 def execute_sentiment_pipeline():
-    """
-    Perform sentiment analysis on Reddit post comments.
-    Returns a summary of sentiment analysis results.
-    """
     try:
         logger.info("===Starting sentiment pipeline ===")
 

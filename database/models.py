@@ -43,3 +43,10 @@ class Sentiment(Base):
     sentiment_results =  Column(JSON, nullable=False)
 
     post = relationship("Post", back_populates="sentiments")
+
+
+class ProcessedBriefs(Base):
+    __tablename__ = "processed_briefs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    curated_content = Column(Text, nullable=False)

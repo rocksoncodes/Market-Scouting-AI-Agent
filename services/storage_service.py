@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from database.models import Post, Comment
 from database.engine import database_engine
-from utils.integrity_helper import ensure_data_integrity
+from utils.helpers import ensure_data_integrity
 from utils.logger import logger
 
 
@@ -10,10 +10,7 @@ class StorageService:
         self.SessionLocal = sessionmaker(bind=database_engine)
         
     def store_posts(self, reddit_data):
-        """
-        Stores validated Reddit posts into the database.
-        Returns a summary of how many were stored.
-        """
+
         session = self.SessionLocal()
         stored_posts = 0
         
@@ -48,10 +45,7 @@ class StorageService:
             
         
     def store_comments(self, reddit_data: dict):
-        """
-        Stores validated Reddit comments into the database.
-        Returns a summary of how many were stored.
-        """
+
         session = self.SessionLocal()
         stored_comments = 0
         

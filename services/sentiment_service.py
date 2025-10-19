@@ -3,9 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from database.engine import database_engine
 from database.models import Post, Sentiment
 from typing import Dict, List
-from utils.query_helper import serialize_post, get_comments_for_post
+from utils.helpers import serialize_post, get_comments_for_post
 from nltk.sentiment import SentimentIntensityAnalyzer
-from utils.query_helper import get_session
+from database.session import get_session
 from collections import Counter
 from utils.logger import logger
 
@@ -14,9 +14,7 @@ Session = sessionmaker(bind=database_engine)
 
 class SentimentService:
     def __init__(self):
-        """
-        Initialize sentiment analyzer and ensure required NLTK resources.
-        """
+
         self.ensure_nltk_resources()
         self.session = get_session()
         self.sia = SentimentIntensityAnalyzer()
@@ -27,9 +25,7 @@ class SentimentService:
 
     @staticmethod
     def ensure_nltk_resources() -> None:
-        """
-        Download required NLTK resources if missing.
-        """
+
         try:
             nltk.data.find("sentiment/vader_lexicon.zip")
         except LookupError:
@@ -38,10 +34,7 @@ class SentimentService:
 
 
     def query_posts_with_comments(self) -> List[Dict]:
-        """
-        Query posts along with their comments.
-        Each comment is included only if its submission_id matches the post id.
-        """
+
         session = self.session
         post_records = []
 
@@ -74,9 +67,6 @@ class SentimentService:
 
 
     def analyze_post_sentiment(self):
-        """
-        Run sentiment analysis on comments and return results with labels.
-        """
 
         post_sentiment_scores = []
 
@@ -118,9 +108,7 @@ class SentimentService:
 
 
     def summarize_post_sentiment(self) -> List[Dict]:
-        """
-        Aggregate sentiment results for all loaded comments.
-        """
+
         logger.info("Starting sentiment summarization...")
         
         if not self.post_sentiment_scores:
@@ -178,9 +166,6 @@ class SentimentService:
             
 
     def store_sentiment_results(self):
-        """
-        Store sentiment results into the database
-        """
         
         session = self.session
         sentiments = self.post_sentiment_summaries

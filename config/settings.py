@@ -87,5 +87,4 @@ Your new workflow:
 Output:
 - Log which posts were analyzed.
 - Return the XYZ problem statements and their sentiment statements.
-- Conclude: "Total problems stored: <number>"
 """

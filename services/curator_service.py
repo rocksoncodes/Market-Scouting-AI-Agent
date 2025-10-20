@@ -5,9 +5,8 @@ from config import settings
 from database.engine import database_engine
 from database.models import Post, Sentiment, ProcessedBriefs
 from database.session import get_session
-from utils.logger import logger
 from clients.gemini_client import initialize_gemini, provide_agent_tools
-
+from utils.logger import logger
 
 Session = sessionmaker(bind=database_engine)
 
@@ -20,7 +19,11 @@ class CuratorService:
         self.curator_agent_response = None
 
     def query_posts_with_sentiments(self) -> List[Dict]:
-
+        """
+        Call the query_posts_with_sentiments() function to obtain posts and their sentiment analysis results.
+        Each record in the returned list contains a post and its sentiment score.
+        Use this information to guide your next actions, generate summaries, or perform analysis as required.
+        """
         session = self.session
         post_records = []
 
@@ -32,48 +35,39 @@ class CuratorService:
             .all()
         )
 
-        for post, sentiment in posts_with_sentiments:
-            post_with_sentiments = {
-                "post_number": post.id,
-                "subreddit": post.subreddit,
-                "title": post.title,
-                "body": post.body,
-                "sentiment_score": sentiment.sentiment_results
-            }
-            post_records.append(post_with_sentiments)
+        try:
+            for post, sentiment in posts_with_sentiments:
+                post_with_sentiments = {
+                    "post_number": post.id,
+                    "subreddit": post.subreddit,
+                    "title": post.title,
+                    "body": post.body,
+                    "sentiment_score": sentiment.sentiment_results
+                }
+                post_records.append(post_with_sentiments)
 
-        logger.info("Successfully queried posts with sentiments.")
+            logger.info("Successfully queried posts with sentiments.")
 
-        self.post_with_sentiments = post_records
-        return post_records
+            self.post_with_sentiments = post_records
+            return post_records
 
-
-    def feeder(self) -> List[Dict]:
-        """
-        Call the Feeder function to obtain posts and their sentiment analysis results.
-        Each record in the returned list contains a post and its sentiment score.
-        Use this information to guide your next actions, generate summaries, or perform analysis as required.
-        """
-        return self.query_posts_with_sentiments()
+        except Exception as e:
+            logger.error(f"Error querying posts with sentiments from the database!:{e}",exc_info=True)
+            raise SystemExit
 
 
     def execute_curator_agent(self):
-
-        if not self.post_with_sentiments:
-            logger.info("No posts with sentiments found. Querying database...")
-            self.query_posts_with_sentiments()
 
         try:
             logger.info("Executing Curator Agent...")
             response = self.agent.models.generate_content(
                 model=settings.AGENT_MODEL,
                 contents=settings.SCOUT_OBJECTIVE,
-                config=provide_agent_tools(tools=[self.feeder])
+                config=provide_agent_tools(tools=[self.query_posts_with_sentiments])
             )
 
             logger.info("Curator Agent executed successfully..")
             curator_response = response.text
-            print(response.text)
 
             self.curator_agent_response = curator_response
             return curator_response
@@ -89,7 +83,7 @@ class CuratorService:
             raise
 
         except Exception as e:
-            logger.exception(f"Unexpected error while running Market Scout Agent: {e}")
+            logger.error(f"Unexpected error while running Market Scout Agent: {e}")
             raise SystemExit("Agent terminated due to an error.")
 
 

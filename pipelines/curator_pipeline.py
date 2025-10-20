@@ -14,5 +14,5 @@ def execute_curator_pipeline():
         return True
 
     except Exception as e:
-        logger.info("Error executing curator pipeline:", exc_info=True)
+        logger.error("Error executing curator pipeline:", exc_info=True)
         return {"error": str(e)}

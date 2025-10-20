@@ -18,7 +18,6 @@ class SentimentService:
         self.ensure_nltk_resources()
         self.session = get_session()
         self.sia = SentimentIntensityAnalyzer()
-
         self.query_results: List[Dict] = []
         self.post_sentiment_scores: List[List[Dict]] = []
         self.post_sentiment_summaries: List[List[Dict]] = []

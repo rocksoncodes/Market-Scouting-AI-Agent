@@ -6,19 +6,17 @@ from clients.reddit_client import get_reddit_client
 
 class ScraperService:
     def __init__(self):
+
         self.reddit = get_reddit_client()
-        
         self.subreddits = settings.DEFAULT_SUBREDDITS
         self.post_limit = settings.DEFAULT_POST_LIMIT
         self.comment_limit = settings.DEFAULT_COMMENT_LIMIT
         self.min_comments =  settings.MIN_COMMENTS
         self.min_score = settings.MIN_SCORE
         self.min_upvote_ratio = settings.MIN_UPVOTE_RATIO
-        
         self.posts = []
         self.submission_ids = []
         self.comments = []
-
 
     def fetch_reddit_posts(self) -> List[Dict[str, Any]]:
 
@@ -64,7 +62,7 @@ class ScraperService:
     def fetch_post_ids(self) -> List[str]:
 
         if not self.posts:
-            logger.warning("No posts available. Run fetch_reddit_posts() first.")
+            logger.warning("No posts available. Running fetch_reddit_posts() first...")
             self.fetch_reddit_posts()
 
         submission_ids: List[str] = []
@@ -80,13 +78,9 @@ class ScraperService:
     
 
     def fetch_reddit_comments(self) -> List[Dict[str, Any]]:
-        """
-        Fetch comments for stored submission IDs using default comment limit.
-        Returns:
-            List of comment dictionaries.
-        """
+
         if not self.submission_ids:
-            logger.warning("No submission IDs available. Running fetch_post_ids().")
+            logger.warning("No submission IDs available. Running fetch_post_ids()...")
             self.fetch_post_ids()
 
         comments_collected: List[Dict[str, Any]] = []

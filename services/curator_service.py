@@ -5,9 +5,8 @@ from config import settings
 from database.engine import database_engine
 from database.models import Post, Sentiment, ProcessedBriefs
 from database.session import get_session
-from utils.logger import logger
 from clients.gemini_client import initialize_gemini, provide_agent_tools
-
+from utils.logger import logger
 
 Session = sessionmaker(bind=database_engine)
 
